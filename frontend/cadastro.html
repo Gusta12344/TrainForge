@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111315" />
+    <meta name="description" content="Comece no TrainForge: treinos organizados a partir do seu perfil e da sua rotina." />
+    <title>Criar conta · TrainForge</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/simbolo.svg" />
+    <script type="module" src="/src/js/auth/auth.js"></script>
+  </head>
+  <body data-page="register">
+    <a class="skip-link" href="#auth-form">Pular para o formulário</a>
+    <div class="auth-layout">
+      <aside class="brand-panel" aria-label="TrainForge: seu treino, sua rotina, sua forja">
+        <div class="brand-content" data-brand></div>
+      </aside>
+      <main class="auth-panel">
+        <nav class="auth-navigation" aria-label="Acesso à conta">
+          <span>Já tem uma conta?</span><a href="/">Entrar <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+        </nav>
+        <section class="form-section" aria-labelledby="form-title">
+          <header class="form-heading">
+            <h1 id="form-title">Sua jornada começa aqui.</h1>
+            <p>Crie sua conta para organizar seus treinos.</p>
+          </header>
+          <form id="auth-form" method="post" novalidate>
+            <fieldset disabled>
+            <div class="field">
+              <label for="name">Nome</label>
+              <div class="input-wrap">
+                <i data-lucide="user-round" aria-hidden="true"></i>
+                <input id="name" name="name" type="text" autocomplete="name" placeholder="Como podemos chamar você?" required aria-describedby="name-error" />
+              </div>
+              <div class="field-error" id="name-error" hidden><div><p></p></div></div>
+            </div>
+            <div class="field">
+              <label for="email">E-mail</label>
+              <div class="input-wrap">
+                <i data-lucide="mail" aria-hidden="true"></i>
+                <input id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="seu@email.com" required aria-describedby="email-error" />
+              </div>
+              <div class="field-error" id="email-error" hidden><div><p></p></div></div>
+            </div>
+            <div class="field">
+              <label for="password">Senha</label>
+              <div class="input-wrap">
+                <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+                <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Crie sua senha" required aria-describedby="password-hint password-error" />
+                <button class="password-toggle" type="button" aria-label="Mostrar senha" aria-controls="password" aria-pressed="false">
+                  <i data-lucide="eye" aria-hidden="true"></i>
+                </button>
+              </div>
+              <p class="field-hint" id="password-hint">Use pelo menos 12 caracteres.</p>
+              <div class="field-error" id="password-error" hidden><div><p></p></div></div>
+            </div>
+            <button class="primary-button" type="submit"><span>Criar conta</span><i data-lucide="arrow-right" aria-hidden="true"></i></button>
+            <div class="form-feedback" role="status" aria-live="polite" tabindex="-1" hidden></div>
+            </fieldset>
+          </form>
+        </section>
+        <footer class="auth-footer"><span>TrainForge © 2026</span></footer>
+      </main>
+    </div>
+    <noscript><p class="noscript-note">Ative o JavaScript para usar os formulários desta prévia.</p></noscript>
+  </body>
+</html>
