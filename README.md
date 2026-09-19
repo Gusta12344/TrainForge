@@ -166,7 +166,7 @@ npm run preview
 
 `npm test` verifica as regras de validação da interface. `npm run build` gera os arquivos estáticos em `dist/`; `npm run preview` serve esse resultado localmente, no endereço exibido no terminal. Execute o build novamente depois de alterar o código se quiser conferir essas alterações no preview. O preview não publica o projeto na internet.
 
-`node_modules/` e `dist/` são gerados localmente e ignorados pelo Git. As pastas acadêmicas `Docs/` e `ProfessorEnvios/` não são necessárias para executar a interface. A validação no navegador não substitui a validação da futura API.
+`node_modules/` e `dist/` são gerados localmente e ignorados pelo Git. A validação no navegador não substitui a validação da futura API.
 
 ### Problemas comuns
 
@@ -210,18 +210,3 @@ Os JavaScripts ficam em `frontend/src/js/`, agrupados pelas páginas que atendem
 Login e cadastro mantêm seus HTMLs e endereços próprios. `auth-navigation.js` carrega o próximo formulário e atualiza o histórico sem recriar a marca ou sortear outra foto. Se esse carregamento falhar, segue o link normalmente. `auth-motion.js` coordena a entrada e o reposicionamento dos campos com a API nativa de animações do navegador, sem novas dependências. As animações do formulário são encerradas quando a pessoa interage, a aba é ocultada ou a preferência de movimento muda. `photo-motion.js` move foto e linhas em camadas, somente com mouse no desktop. CSS e JavaScript respeitam movimento reduzido; no celular, os deslocamentos e tempos são menores.
 
 `backend/` e `database/` serão introduzidas nas próximas entregas. A direção visual está em [design/GUIA_VISUAL.md](design/GUIA_VISUAL.md); os resultados e limites das verificações, em [planejamentos/verificacao-interface.md](planejamentos/verificacao-interface.md).
-
-## Documentação acadêmica
-
-As pastas locais `Docs/` e `ProfessorEnvios/` contêm, respectivamente, os documentos da dupla e os materiais do professor. Elas estão excluídas do versionamento pelo `.gitignore` e não acompanham o clone do repositório.
-
-O material acadêmico reúne TAP, visão e escopo, requisitos e EAP, cronograma, riscos, comunicação e a atividade de fluxo, wireframes, tecnologias e banco. A entrega desses documentos ocorre separadamente do código.
-
-## Trabalho em dupla
-
-- Manter tarefas e decisões atualizadas no quadro do projeto.
-- Fazer commits pequenos, com mensagens que expliquem a alteração.
-- Revisar as mudanças com o outro integrante e registrar alterações de escopo.
-- Conferir os critérios de aceite antes de considerar uma funcionalidade concluída.
-
-Arquivos de ambiente, credenciais, dependências instaladas e saídas de compilação também ficam fora do versionamento. Exemplos de configuração podem ser publicados em arquivos como `.env.example`, sem dados reais.
