@@ -4,6 +4,8 @@ Sistema web para gerar programas de treinamento personalizados a partir do perfi
 
 Projeto desenvolvido para a disciplina de **Projeto Interdisciplinar III**, do curso de **Análise e Desenvolvimento de Sistemas**, no segundo semestre de 2026.
 
+**Para testar em outra máquina, siga [Executar a interface](#executar-a-interface).** A versão atual permite testar as telas de login e cadastro; ainda não há autenticação real ou geração de treinos.
+
 ## Integrantes
 
 | Integrante | GitHub | Responsabilidade principal |
@@ -93,22 +95,92 @@ O planejamento prevê cadastro e questionário em 15/09, primeira geração em 2
 
 ## Executar a interface
 
-Requisitos: Node.js 22.12 ou superior e npm. Na raiz do repositório:
+### 1. Preparar a máquina
+
+- Instale **Node.js 22.12 ou superior**, com **npm**. Não é necessário instalar Vite globalmente.
+- Tenha **Git** para clonar o repositório, ou receba um ZIP da versão que será testada.
+- Use um navegador atualizado com JavaScript habilitado.
+- Tenha acesso à internet para baixar o projeto e suas dependências na primeira instalação.
+
+No terminal (Prompt de Comando/PowerShell no Windows ou terminal do Linux/macOS), confira:
+
+```bash
+node --version
+npm --version
+```
+
+**Não é necessário instalar MySQL, configurar `.env`, criar uma conta ou obter chaves de API.** Express e MySQL pertencem ao planejamento do sistema; a prévia atual executa somente o front-end. Imagens, ícones e fontes são distribuídos com o projeto e suas dependências.
+
+### 2. Obter a versão com as telas
+
+Clone a branch `main`, que reúne a versão integrada do projeto:
+
+```bash
+git clone --branch main https://github.com/Gusta12344/TrainForge.git
+cd TrainForge
+```
+
+Se receber um ZIP, extraia o projeto e abra o terminal na pasta que contém `package.json`, `package-lock.json` e `vite.config.js`. Não execute os comandos de instalação dentro de `frontend/`.
+
+### 3. Instalar e iniciar
+
+Na raiz do projeto, execute:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Abra o endereço local exibido no terminal (normalmente `http://127.0.0.1:5173`). O login fica em `/` e o cadastro em `/cadastro.html`. Encerre o servidor com `Ctrl+C`.
+`npm ci` instala as versões do `package-lock.json`. Cada pessoa deve instalar as dependências na própria máquina; não copie a pasta `node_modules` de outro computador.
+
+Mantenha o terminal aberto e acesse o endereço exibido pelo Vite, normalmente [http://127.0.0.1:5173](http://127.0.0.1:5173). Se a porta estiver ocupada, o Vite pode usar outra: siga o endereço informado no terminal.
+
+| Tela | Caminho no servidor local |
+| --- | --- |
+| Login | `/` |
+| Cadastro | `/cadastro.html` |
+
+**Não abra os HTMLs com duplo clique ou pelo endereço `file://`.** Os módulos e recursos precisam do servidor Vite. `127.0.0.1` aponta para a própria máquina: quem for testar deve iniciar seu próprio servidor.
+
+Encerre com `Ctrl+C`. Nas próximas execuções, basta `npm run dev`; execute novamente `npm ci` se receber uma atualização das dependências.
+
+### 4. Conferir o funcionamento
+
+1. No login, clique em **Criar conta** e confira a mudança para cadastro.
+2. Envie o formulário vazio: os campos devem mostrar os erros e o primeiro campo inválido deve receber foco.
+3. Preencha com dados fictícios, por exemplo: nome `Pessoa Teste`, e-mail `teste@example.com` e senha `treino-ficticio-2026`.
+4. Confira o botão de mostrar/ocultar senha e envie o cadastro. O resultado esperado é a mensagem de que **nenhuma conta foi criada e nenhum dado foi enviado**.
+5. Volte ao login, preencha e envie. O aviso de que o acesso ainda não está disponível é esperado. Não existe uma conta de demonstração para entrar em um painel.
+
+A ausência de autenticação é uma limitação desta entrega, não um problema de instalação. As animações são reduzidas no celular e desativadas quando a preferência de movimento reduzido está ativa no sistema/navegador.
+
+### Testes e versão compilada
+
+Na raiz do projeto, use outro terminal ou interrompa o servidor antes de executar:
 
 ```bash
-npm test          # testes das regras de validação da interface
-npm run build    # gera a interface estática em dist/
-npm run preview  # permite conferir o build localmente
+npm test
+npm run build
+npm run preview
 ```
 
-Não é necessário configurar banco nem `.env` para esta prévia. `dist/` é gerado e ignorado pelo Git. A validação no navegador não substitui a validação da futura API.
+`npm test` verifica as regras de validação da interface. `npm run build` gera os arquivos estáticos em `dist/`; `npm run preview` serve esse resultado localmente, no endereço exibido no terminal. Execute o build novamente depois de alterar o código se quiser conferir essas alterações no preview. O preview não publica o projeto na internet.
+
+`node_modules/` e `dist/` são gerados localmente e ignorados pelo Git. As pastas acadêmicas `Docs/` e `ProfessorEnvios/` não são necessárias para executar a interface. A validação no navegador não substitui a validação da futura API.
+
+### Problemas comuns
+
+| Problema | Como resolver |
+| --- | --- |
+| `node` ou `npm` não reconhecido | Instale o Node.js com npm, reabra o terminal e confira as versões. |
+| Erro de versão do Node (`EBADENGINE`) | Use Node.js 22.12 ou superior, conforme `package.json`. |
+| PowerShell bloqueia `npm.ps1` | Execute os comandos no Prompt de Comando, ou use `npm.cmd` no lugar de `npm` no PowerShell. |
+| `package.json` não encontrado (`ENOENT`) | Abra o terminal na raiz do projeto. Se o arquivo não existir na cópia, confira se recebeu a versão com as telas. |
+| Falha de conexão durante `npm ci` | Confira o acesso ao registro npm na rede e tente novamente. Preserve `package-lock.json`. |
+| Página não abre | Mantenha `npm run dev` em execução e confira o endereço/porta que o terminal mostrou. |
+| Formulário desabilitado ou recursos ausentes | Acesse pelo servidor Vite, habilite JavaScript e confira erros no terminal e no console do navegador. |
+| Preview ausente ou desatualizado | Execute `npm run build` antes de `npm run preview`. |
+| Não consigo entrar após preencher os campos | A autenticação ainda não está implementada; o comportamento esperado é o aviso de prévia. |
 
 ## Organização atual
 
