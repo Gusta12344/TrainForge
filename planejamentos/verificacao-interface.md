@@ -48,7 +48,7 @@ Conceitos: `design/conceito-login.png` e `design/conceito-cadastro.png`. Captura
 - Uma alteração de `matchMedia` simulada na cópia temporária durante a transição cancelou todas as animações JavaScript do formulário, sem rejeição não tratada. A navegação permaneceu funcional com a preferência simulada. A preferência nativa do sistema não foi alterada; a regra CSS de movimento reduzido foi inspecionada, não emulada.
 - Falha simulada de `fetch` abriu o cadastro pela navegação completa, com o formulário habilitado e sem carregar a instrumentação. Foto e linhas moveram-se em sentidos opostos e voltaram a zero ao sair com o mouse.
 - `npm test`, `npm run build` e `git diff --check` passaram. Sem erros/avisos no console da aplicação. Os testes automatizados existentes cobrem validação; interação e movimento foram conferidos no navegador. Build: JavaScript compartilhado de aproximadamente 5,06 kB gzip; não é uma medição de tempo em 4G.
-- README, guia visual, índice local e revisão documental atualizados. Conteúdo anterior e documentos acadêmicos preservados. Trabalho apenas local, sem commit, push ou publicação.
+- README e guia visual atualizados. Conteúdo anterior preservado. Trabalho apenas local, sem commit, push ou publicação.
 - Limites: outros navegadores, preferência nativa de movimento reduzido e desempenho em 4G não foram medidos. Autenticação/API continuam fora desta alteração.
 
 
