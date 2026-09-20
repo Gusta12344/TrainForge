@@ -43,9 +43,9 @@ As prioridades seguem os requisitos definidos pela dupla. A lista representa o p
 
 | Prioridade | Funcionalidades previstas |
 | --- | --- |
-| Obrigatório — RF01 a RF05 | Cadastro, login, questionário, confirmação do perfil, geração e consulta guiada do programa atual salvo. |
-| Importante — RF06, RF07, RF09 e RF10 | Substituição automática de exercícios com registro do motivo, histórico de programas, administração dos exercícios e manutenção das regras. |
-| Desejável — RF08 | Exportação do programa atual completo em PDF, com orientações textuais e sem imagens. |
+| Obrigatório - RF01 a RF05 | Cadastro, login, questionário, confirmação do perfil, geração e consulta guiada do programa atual salvo. |
+| Importante - RF06, RF07, RF09 e RF10 | Substituição automática de exercícios com registro do motivo, histórico de programas, administração dos exercícios e manutenção das regras. |
+| Desejável - RF08 | Exportação do programa atual completo em PDF, com orientações textuais e sem imagens. |
 
 O histórico guarda **programas gerados**, que podem ser consultados posteriormente. Programas antigos não podem ser editados ou reativados como atuais nesta versão.
 
@@ -196,7 +196,6 @@ TrainForge/
 │   ├── public/assets/   # Logos e fotografias
 │   └── tests/           # Testes de validação
 ├── design/              # Conceitos, guia visual e licença da fonte da marca
-├── planejamentos/       # Escopo e verificação desta entrega
 ├── package.json
 ├── package-lock.json
 ├── vite.config.js
@@ -209,4 +208,4 @@ Os JavaScripts ficam em `frontend/src/js/`, agrupados pelas páginas que atendem
 
 Login e cadastro mantêm seus HTMLs e endereços próprios. `auth-navigation.js` carrega o próximo formulário e atualiza o histórico sem recriar a marca ou sortear outra foto. Se esse carregamento falhar, segue o link normalmente. `auth-motion.js` coordena a entrada e o reposicionamento dos campos com a API nativa de animações do navegador, sem novas dependências. As animações do formulário são encerradas quando a pessoa interage, a aba é ocultada ou a preferência de movimento muda. `photo-motion.js` move foto e linhas em camadas, somente com mouse no desktop. CSS e JavaScript respeitam movimento reduzido; no celular, os deslocamentos e tempos são menores.
 
-`backend/` e `database/` serão introduzidas nas próximas entregas. A direção visual está em [design/GUIA_VISUAL.md](design/GUIA_VISUAL.md); os resultados e limites das verificações, em [planejamentos/verificacao-interface.md](planejamentos/verificacao-interface.md).
+`backend/` e `database/` serão introduzidas nas próximas entregas. A direção visual está em [design/GUIA_VISUAL.md](design/GUIA_VISUAL.md).
