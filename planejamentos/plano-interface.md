@@ -21,7 +21,7 @@ O usuário autorizou a criação da marca e a escolha dos detalhes visuais. Bran
 - [x] Implementar login e cadastro, incluindo validação e mostrar/ocultar senha.
 - [x] Verificar campos ausentes, e-mail inválido, senha curta e navegação; submissão válida deve informar que nenhuma conta foi criada/acessada nesta prévia.
 - [x] Conferir desktop, celular de 360 px, teclado, contraste e comparação com os conceitos; revisar as regras de movimento reduzido, registrando a ausência de emulação.
-- [x] Atualizar README, índice local e revisão documental com o estado real e comandos verificados.
+- [x] Atualizar README com o estado real e comandos verificados.
 
 Resultados e limitações: [verificação da interface](verificacao-interface.md). Conceitos, arquivos e diferenças intencionais: [guia visual](../design/GUIA_VISUAL.md).
 
