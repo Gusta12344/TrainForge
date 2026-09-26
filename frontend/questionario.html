@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111315" />
+    <meta name="robots" content="noindex" />
+    <meta name="description" content="Defina seu objetivo, perfil, disponibilidade e rotina no questionário do TrainForge." />
+    <title>Questionário · TrainForge</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/simbolo.svg" />
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link rel="stylesheet" href="/src/styles/questionario.css" />
+  </head>
+  <body class="questionnaire-page">
+    <a class="skip-link" href="#step-title">Pular para o questionário</a>
+    <div class="questionnaire-layout">
+      <aside class="questionnaire-rail">
+        <div class="rail-content">
+          <img class="questionnaire-logo" src="/assets/logo-trainforge.svg" width="232" height="51" alt="TrainForge" />
+          <p class="rail-eyebrow">SEU PROGRAMA</p>
+          <nav class="step-nav" aria-label="Etapas do questionário" data-step-nav></nav>
+        </div>
+        <div class="questionnaire-art" aria-hidden="true">
+          <picture class="questionnaire-photo">
+            <source media="(min-width: 900px)" srcset="/assets/treinamento-salto.webp" />
+            <img width="1122" height="1402" alt="" decoding="async" />
+          </picture>
+          <svg class="questionnaire-court" viewBox="0 0 296 160" fill="none" aria-hidden="true" focusable="false">
+            <path d="M-36 126 207 43 338 68M-10 157 236 73 336 92M67 91 96 121M198 47 227 77" />
+          </svg>
+        </div>
+      </aside>
+      <main class="questionnaire-main" id="questionnaire">
+        <div class="questionnaire-container">
+          <header class="progress-header">
+            <img class="mobile-logo" src="/assets/logo-trainforge.svg" width="208" height="46" alt="TrainForge" />
+            <div class="progress-caption"><span class="eyebrow">QUESTIONÁRIO</span><span id="step-position">Etapa 1 de 7</span><button type="button" id="show-steps" class="text-button" aria-controls="mobile-steps" aria-expanded="false" hidden>Ver etapas <i data-lucide="chevron-down" aria-hidden="true"></i></button></div>
+            <div class="progress-track" aria-hidden="true"></div>
+            <nav id="mobile-steps" aria-label="Etapas do questionário" data-step-nav hidden></nav>
+          </header>
+          <form id="questionnaire-form" novalidate>
+            <div id="step-content"><h1 id="step-title" tabindex="-1">SEU OBJETIVO.</h1><p>Carregando o questionário…</p></div>
+            <noscript><p>Ative o JavaScript para preencher o questionário.</p></noscript>
+            <footer class="questionnaire-actions" id="questionnaire-actions" hidden>
+              <p id="next-description"></p>
+              <div class="action-buttons"><button type="button" class="back-button" id="back" hidden><i data-lucide="arrow-left" aria-hidden="true"></i> Voltar</button><button type="submit" class="primary-button" id="continue">Continuar <i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
+            </footer>
+          </form>
+          <details class="session-help"><summary>Sobre suas respostas</summary><p>Você pode voltar entre etapas sem perder respostas. Elas ficam apenas nesta página e ainda não são salvas. Recarregar ou fechar a página apaga o preenchimento.</p></details>
+        </div>
+      </main>
+    </div>
+    <div id="questionnaire-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="/src/js/questionario/questionario.js"></script>
+  </body>
+</html>
