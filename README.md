@@ -19,7 +19,7 @@ Os papéis indicam quem responde por cada frente. Os dois participam da programa
 
 O TrainForge foi pensado para quem quer organizar seus treinos, mas não sabe escolher exercícios ou montar um programa por conta própria. A pessoa informa seu objetivo, experiência, disponibilidade, estrutura de treino e prática esportiva. Com essas informações, o sistema organiza um programa por dias e sessões e apresenta os exercícios com orientações de execução.
 
-A primeira versão prevê **hipertrofia, força e preparação complementar para vôlei**. Vôlei foi definido como a modalidade esportiva inicial; futebol não faz parte desta primeira entrega.
+A primeira versão prevê **hipertrofia, força e preparação física para vôlei** como caminhos de objetivo principal. No caminho esportivo, o usuário pode escolher um objetivo complementar, como hipertrofia. Vôlei foi definido como a modalidade esportiva inicial e será tratado de forma geral, sem exigir distinção entre quadra e praia; futebol não faz parte desta primeira entrega.
 
 ## Como o sistema deve funcionar
 

@@ -3,6 +3,9 @@
 /ProfessorEnvios/
 /planejamentos/
 
+# Referência local do questionário
+/design/QUESTIONARIO.md
+
 # Dependências e arquivos gerados
 node_modules/
 dist/
