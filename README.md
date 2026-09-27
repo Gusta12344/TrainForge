@@ -4,7 +4,7 @@ Sistema web para gerar programas de treinamento personalizados a partir do perfi
 
 Projeto desenvolvido para a disciplina de **Projeto Interdisciplinar III**, do curso de **Análise e Desenvolvimento de Sistemas**, no segundo semestre de 2026.
 
-**Para testar em outra máquina, siga [Executar a interface](#executar-a-interface).** A versão atual permite testar as telas de login e cadastro; ainda não há autenticação real ou geração de treinos.
+**Para testar em outra máquina, siga [Executar a interface](#executar-a-interface).** A versão atual permite testar login, cadastro e o questionário com revisão das respostas; ainda não há autenticação real, salvamento das respostas ou geração de treinos.
 
 ## Integrantes
 
@@ -89,7 +89,11 @@ Existe uma **prévia interativa de login e cadastro**, com identidade visual, lo
 
 **A prévia não cria contas, não autentica e não envia nem persiste os dados digitados.** Os formulários informam essa limitação quando os campos válidos são submetidos. Se o JavaScript não carregar, os controles permanecem desabilitados. A regra de 12 a 128 caracteres para nova senha é uma proposta da interface e precisa ser alinhada com o servidor.
 
-Ainda não existem API, banco implementado, questionário, painel ou motor de geração. RF01 e RF02 não estão concluídos: dependem da autenticação real e dos testes de integração. A prévia cobre somente as telas de acesso, não o protótipo completo do fluxo do projeto.
+O **questionário interativo** está disponível em `/questionario.html`, com sete etapas, perguntas condicionais, validação, revisão e retorno para edição. É possível descrever as orientações recebidas ou dúvidas sobre restrições, identificar outra região do corpo, listar máquinas e detalhar outros equipamentos por local. Cada etapa de perguntas também oferece observações opcionais. Textos com várias linhas são preservados ao navegar e aparecem na revisão. Ao mudar uma resposta, os detalhes que deixam de se aplicar ficam fora do resumo, mantendo o rascunho para eventual retorno durante o preenchimento.
+
+As respostas ficam somente na memória da página e são perdidas ao recarregar ou sair. O botão final de geração permanece desabilitado. Descrições livres não são interpretadas automaticamente como equipamentos reconhecidos ou regras de treino. Catálogo, regras de geração e tratamento de restrições ainda precisam ser integrados.
+
+Ainda não existem API, banco implementado, painel ou motor de geração nesta cópia. RF01 e RF02 dependem da autenticação real; o fluxo RF03–RF05 ainda depende de persistência, geração e testes de integração.
 
 O planejamento prevê cadastro e questionário em 15/09, primeira geração em 22/09, versão principal testada e publicada em 29/09 e apresentação em 06/10/2026. Essas datas são metas do cronograma e não indicam funcionalidades concluídas.
 
@@ -139,6 +143,7 @@ Mantenha o terminal aberto e acesse o endereço exibido pelo Vite, normalmente [
 | --- | --- |
 | Login | `/` |
 | Cadastro | `/cadastro.html` |
+| Questionário e revisão | `/questionario.html` |
 
 **Não abra os HTMLs com duplo clique ou pelo endereço `file://`.** Os módulos e recursos precisam do servidor Vite. `127.0.0.1` aponta para a própria máquina: quem for testar deve iniciar seu próprio servidor.
 
@@ -154,6 +159,8 @@ Encerre com `Ctrl+C`. Nas próximas execuções, basta `npm run dev`; execute no
 
 A ausência de autenticação é uma limitação desta entrega, não um problema de instalação. As animações são reduzidas no celular e desativadas quando a preferência de movimento reduzido está ativa no sistema/navegador.
 
+Para conferir o questionário, abra `/questionario.html` diretamente e preencha com dados fictícios. Acrescente uma observação, selecione máquinas ou outros equipamentos e descreva os itens. Na etapa de restrições, “Sim” exige a orientação recebida; “Tenho dúvidas” permite detalhar a dúvida sem inventar uma orientação. Na revisão, confira os textos e use “Editar” para voltar. A ausência de salvamento e o botão de geração desabilitado são esperados nesta prévia.
+
 ### Testes e versão compilada
 
 Na raiz do projeto, use outro terminal ou interrompa o servidor antes de executar:
@@ -164,7 +171,7 @@ npm run build
 npm run preview
 ```
 
-`npm test` verifica as regras de validação da interface. `npm run build` gera os arquivos estáticos em `dist/`; `npm run preview` serve esse resultado localmente, no endereço exibido no terminal. Execute o build novamente depois de alterar o código se quiser conferir essas alterações no preview. O preview não publica o projeto na internet.
+`npm test` verifica validação das telas de acesso, respostas condicionais e detalhes do questionário, renderização textual da revisão e comportamento do módulo de movimento. `npm run build` gera os arquivos estáticos em `dist/`; `npm run preview` serve esse resultado localmente, no endereço exibido no terminal. Execute o build novamente depois de alterar o código se quiser conferir essas alterações no preview. O preview não publica o projeto na internet.
 
 `node_modules/` e `dist/` são gerados localmente e ignorados pelo Git. A validação no navegador não substitui a validação da futura API.
 
@@ -189,12 +196,14 @@ TrainForge/
 ├── frontend/
 │   ├── index.html       # Login
 │   ├── cadastro.html    # Cadastro
+│   ├── questionario.html # Questionário e revisão das respostas
 │   ├── src/
 │   │   ├── js/          # JavaScript organizado por páginas ou fluxo
-│   │   │   └── auth/    # Interações, navegação e validação de login/cadastro
-│   │   └── styles/      # global.css (base) e auth.css (login/cadastro)
+│   │   │   ├── auth/    # Interações, navegação e validação de login/cadastro
+│   │   │   └── questionario/ # Estado, validação, apresentação e movimento do questionário
+│   │   └── styles/      # global.css, auth.css e questionario.css
 │   ├── public/assets/   # Logos e fotografias
-│   └── tests/           # Testes de validação
+│   └── tests/           # Testes de acesso, questionário e movimento
 ├── design/              # Conceitos, guia visual e licença da fonte da marca
 ├── package.json
 ├── package-lock.json
@@ -204,7 +213,7 @@ TrainForge/
 
 Os estilos são divididos por responsabilidade: `frontend/src/styles/global.css` reúne fontes, cores, regras básicas e acessibilidade; `auth.css` contém layout, componentes e animações das telas de acesso. Novas páginas devem importar o global e seu CSS específico. Componentes compartilhados podem ganhar um arquivo próprio quando houver reutilização real. O Vite pode reunir esses arquivos no build; a separação permanece no código-fonte.
 
-Os JavaScripts ficam em `frontend/src/js/`, agrupados pelas páginas que atendem. A pasta `auth/` reúne os módulos de login e cadastro, com `auth.js` como ponto de entrada. As próximas páginas terão suas próprias pastas; módulos compartilhados serão separados quando houver reutilização entre fluxos.
+Os JavaScripts ficam em `frontend/src/js/`, agrupados pelas páginas que atendem. A pasta `auth/` reúne os módulos de login e cadastro, com `auth.js` como ponto de entrada. A pasta `questionario/` separa estado e validação (`model.js`), apresentação (`render.js`), atualização dos elementos (`dom.js`), movimento (`motion.js`) e coordenação (`questionario.js`). Seus estilos específicos ficam em `styles/questionario.css`. As próximas páginas terão suas próprias pastas; módulos compartilhados serão separados quando houver reutilização entre fluxos.
 
 Login e cadastro mantêm seus HTMLs e endereços próprios. `auth-navigation.js` carrega o próximo formulário e atualiza o histórico sem recriar a marca ou sortear outra foto. Se esse carregamento falhar, segue o link normalmente. `auth-motion.js` coordena a entrada e o reposicionamento dos campos com a API nativa de animações do navegador, sem novas dependências. As animações do formulário são encerradas quando a pessoa interage, a aba é ocultada ou a preferência de movimento muda. `photo-motion.js` move foto e linhas em camadas, somente com mouse no desktop. CSS e JavaScript respeitam movimento reduzido; no celular, os deslocamentos e tempos são menores.
 

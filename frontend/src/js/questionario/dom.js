@@ -27,6 +27,12 @@ export function reconcile(current, next) {
   current.checked = next.checked;
   if (current.value !== next.value) current.value = next.value;
  }
+ if (current instanceof HTMLTextAreaElement) {
+  if (current.value !== next.value) current.value = next.value;
+  // O valor digitado é controlado pela propriedade; não substituir seus nós
+  // de texto ao reconciliar seleções vizinhas, preservando cursor e rolagem.
+  return;
+ }
  const selectedValue = next instanceof HTMLSelectElement ? next.value : null;
  const expected = [...next.childNodes];
  let cursor = current.firstChild;
