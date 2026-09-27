@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { initialAnswers, applies, projectAnswers, validateStep, toggleMultiple, parseNumber } from '../src/js/questionario/model.js';
+import { blocks, renderReview } from '../src/js/questionario/render.js';
 
 test('complemento esportivo é opcional e vazio não significa ausência declarada',()=>{
  const a={...initialAnswers(),Q01:'sport',Q02:'volleyball'};
@@ -62,4 +63,67 @@ test('restrições e pausa ocultas ficam fora da revisão; catálogo não é pre
  const p=projectAnswers(a);for(const q of ['Q10','Q24','Q21']) assert.equal(q in p,false);
  a.Q22='yes';assert.equal(applies('Q23',a),true);
  assert.deepEqual(projectAnswers(a).Q24,['Joelhos']);
+});
+
+test('orientação é solicitada para restrição conhecida; dúvidas permitem descrição opcional',()=>{
+ const a={...initialAnswers(),Q22:'yes',Q24:['Joelhos']};
+ assert.ok(validateStep(a,5).Q23);
+ a.Q23='   ';assert.ok(validateStep(a,5).Q23);
+ a.Q23='Orientação recebida: evitar saltos.';assert.deepEqual(validateStep(a,5),{});
+ a.Q22='unsure';a.Q23='';assert.equal(applies('Q23',a),true);assert.deepEqual(validateStep(a,5),{});
+ a.Q23='Quero esclarecer uma limitação.';assert.equal(projectAnswers(a).Q23,a.Q23);
+ assert.equal('Q24' in projectAnswers(a),false);
+ a.Q22='none';assert.equal('Q23' in projectAnswers(a),false);
+});
+
+test('outra região exige identificação e o rascunho não vaza quando a opção é retirada',()=>{
+ const a={...initialAnswers(),Q22:'yes',Q23:'Orientação já recebida.',Q24:['Outra região'],otherRegion:''};
+ assert.ok(validateStep(a,5).Q24);
+ a.otherRegion='Pescoço';assert.deepEqual(validateStep(a,5),{});
+ assert.equal(projectAnswers(a).otherRegion,'Pescoço');
+ a.Q24=['Joelhos'];assert.equal('otherRegion' in projectAnswers(a),false);
+ assert.equal(a.otherRegion,'Pescoço');
+});
+
+test('detalhes de máquinas e equipamentos ficam associados apenas aos locais e opções ativos',()=>{
+ const a={...initialAnswers(),Q19:'multiple',Q15:['0','2'],locations:{0:'gym',2:'home'},gear:{gym:['machines'],home:['other']},machineDetails:{gym:'Leg press\nCadeira extensora',home:'Rascunho antigo'},equipmentDetails:{gym:'Banco regulável',home:'Argolas'}};
+ const p=projectAnswers(a);
+ assert.deepEqual(p.machineDetails,{gym:'Leg press\nCadeira extensora'});
+ assert.deepEqual(p.equipmentDetails,{gym:'Banco regulável',home:'Argolas'});
+ a.Q19='home';assert.equal('machineDetails' in projectAnswers(a),false);
+ assert.deepEqual(projectAnswers(a).equipmentDetails,{home:'Argolas'});
+ a.gear.home=['none'];assert.equal('equipmentDetails' in projectAnswers(a),false);
+ assert.equal(a.equipmentDetails.home,'Argolas');
+});
+
+test('outro equipamento precisa de descrição, máquinas desconhecidas não forçam um nome inventado',()=>{
+ const a={...initialAnswers(),Q19:'home',gear:{home:['other']},equipmentDetails:{home:' '}};
+ assert.ok(validateStep(a,4).Q20);
+ a.equipmentDetails.home='Argolas e corda';assert.deepEqual(validateStep(a,4),{});
+ a.gear.home=['machines','unknown'];a.equipmentDetails.home='';assert.deepEqual(validateStep(a,4),{});
+});
+
+test('observações de todas as etapas são opcionais, preservam texto longo e não incluem notas vazias',()=>{
+ const long='Detalhe informado pela pessoa.\n'.repeat(100);
+ const a={...initialAnswers(),notes:{0:'Preferência de objetivo',1:long,2:'Esporte',3:'Horários',4:'Espaço',5:'Observação',6:'Não é etapa de perguntas'}};
+ const p=projectAnswers(a);
+ assert.deepEqual(p.notes,{0:'Preferência de objetivo',1:long,2:'Esporte',3:'Horários',4:'Espaço',5:'Observação'});
+ a.notes[0]='  ';assert.equal('0' in projectAnswers(a).notes,false);
+ assert.equal('notes' in projectAnswers(initialAnswers()),false);
+});
+
+test('revisão mostra detalhes como texto escapado, sem perder quebras de linha nem incluir rascunhos ocultos',()=>{
+ const a={...initialAnswers(),Q22:'yes',Q23:'Primeira linha\n<img src=x onerror=alert(1)>',Q24:['Outra região'],otherRegion:'Pescoço',Q19:'gym',gear:{gym:['machines','other']},machineDetails:{gym:'Leg press'},equipmentDetails:{gym:'Argolas'},notes:{0:'Meu objetivo <especial>'}};
+ const html=renderReview(a);
+ for(const value of ['Primeira linha\n&lt;img src=x onerror=alert(1)&gt;','Pescoço','Leg press','Argolas','Meu objetivo &lt;especial&gt;']) assert.ok(html.includes(value),value);
+ assert.equal(html.includes('<img src=x'),false);
+ a.Q22='none';assert.equal(renderReview(a).includes('Primeira linha'),false);
+ assert.equal(renderReview(a).includes('Pescoço'),false);
+});
+
+test('campos descritivos reaparecem preenchidos ao editar cada etapa',()=>{
+ const a={...initialAnswers(),Q22:'yes',Q23:'Linha 1\n</textarea><script>alert(1)</script>',Q24:['Outra região'],otherRegion:'Pescoço',Q19:'gym',gear:{gym:['machines']},machineDetails:{gym:'Leg press'},equipmentDetails:{gym:'Banco ajustável'},notes:{0:'Objetivo pessoal'}};
+ assert.ok(blocks(5,a).some(b=>b.html.includes('<textarea')&&b.html.includes('Linha 1\n&lt;/textarea&gt;&lt;script&gt;')));
+ assert.ok(blocks(4,a).some(b=>b.html.includes('Leg press')&&b.html.includes('Banco ajustável')));
+ assert.ok(blocks(0,a).some(b=>b.html.includes('Objetivo pessoal')));
 });

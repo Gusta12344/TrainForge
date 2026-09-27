@@ -2,7 +2,7 @@
 export const steps = ['Objetivo', 'Perfil e experiência', 'Rotina esportiva', 'Disponibilidade', 'Local e equipamentos', 'Restrições', 'Revisão das respostas'];
 export const days = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
 export const places = [['gym', 'Academia'], ['home', 'Em casa'], ['club', 'Clube, escola ou equipe'], ['outside', 'Área externa']];
-export const equipment = [['dumbbells', 'Halteres'], ['barbell', 'Barras e anilhas'], ['bench', 'Banco de exercícios'], ['rack', 'Suporte para agachamento'], ['bands', 'Elásticos'], ['kettlebell', 'Kettlebell'], ['pullup', 'Barra fixa'], ['cables', 'Polias/cabos'], ['machines', 'Máquinas de musculação'], ['none', 'Nenhum desses; apenas peso do corpo'], ['unknown', 'Não sei identificar os equipamentos']];
+export const equipment = [['dumbbells', 'Halteres'], ['barbell', 'Barras e anilhas'], ['bench', 'Banco de exercícios'], ['rack', 'Suporte para agachamento'], ['bands', 'Elásticos'], ['kettlebell', 'Kettlebell'], ['pullup', 'Barra fixa'], ['cables', 'Polias/cabos'], ['machines', 'Máquinas de musculação'], ['other', 'Outros equipamentos'], ['none', 'Nenhum desses; apenas peso do corpo'], ['unknown', 'Não sei identificar os equipamentos']];
 export const options = {
  Q01: [['hypertrophy', 'Hipertrofia', 'Desenvolvimento muscular', 'dumbbell'], ['strength', 'Força', 'Desenvolvimento de força', 'weight'], ['sport', 'Preparação para esporte', 'Treino voltado à modalidade', 'activity']],
  Q02: [['volleyball', 'Vôlei', '', 'volleyball']],
@@ -29,7 +29,7 @@ export const questions = {
  Q19: 'Onde você realizará os treinos do programa?', Q20: 'Quais equipamentos estão disponíveis nesse local?', Q21: 'O espaço permite deslocamentos ou saltos?', Q22: 'Você possui alguma restrição para exercícios já identificada por um profissional?', Q23: 'Quais orientações ou restrições você recebeu?', Q24: 'A quais regiões essas restrições se referem?',
 };
 export const stepQuestions = [['Q01', 'Q02', 'Q03', 'Q04'], ['Q05', 'Q06', 'Q07', 'Q08', 'Q09', 'Q10'], ['Q11', 'Q12', 'Q13', 'Q14'], ['Q15', 'Q16', 'Q17', 'Q18'], ['Q19', 'Q20', 'Q21'], ['Q22', 'Q23', 'Q24']];
-export const initialAnswers = () => ({ Q04: [], Q15: [], Q24: [], sportEvents: [], otherEvents: [], times: {}, timing: {}, locations: {}, gear: {}, space: {} });
+export const initialAnswers = () => ({ Q04: [], Q15: [], Q24: [], sportEvents: [], otherEvents: [], times: {}, timing: {}, locations: {}, gear: {}, space: {}, machineDetails: {}, equipmentDetails: {}, notes: {} });
 export const hasSport = a => Boolean(a.Q11 && a.Q11 !== 'none');
 export const hasVolley = a => ['volleyball', 'both'].includes(a.Q11);
 export const selectedDays = a => [...a.Q15].sort();
@@ -43,7 +43,8 @@ export function applies(q, a) {
  if (['Q13', 'Q18'].includes(q)) return hasSport(a);
  // Catálogo ainda não confirma exercícios com saltos: não pressupor aplicabilidade.
  if (q === 'Q21') return false;
- if (['Q23', 'Q24'].includes(q)) return a.Q22 === 'yes';
+ if (q === 'Q23') return ['yes', 'unsure'].includes(a.Q22);
+ if (q === 'Q24') return a.Q22 === 'yes';
  return true;
 }
 export function toggleMultiple(previous = [], value, exclusive = []) {
@@ -89,6 +90,11 @@ export function validateStep(a, step) {
  if (step === 4) {
   if (a.Q19 === 'multiple' && (selectedDays(a).some(d => !a.locations[d]) || activePlaces(a).length < 2)) fail('Q19','Associe cada dia a um local e escolha pelo menos dois locais diferentes.');
   if (activePlaces(a).some(p => !a.gear[p]?.length)) fail('Q20','Informe os equipamentos de cada local, inclusive quando não souber identificá-los.');
+  else if (activePlaces(a).some(p => a.gear[p]?.includes('other') && !filled(a.equipmentDetails?.[p]))) fail('Q20','Descreva os outros equipamentos nos locais em que marcou essa opção.');
+ }
+ if (step === 5 && a.Q22 === 'yes') {
+  if (!filled(a.Q23)) fail('Q23','Descreva a orientação ou restrição que recebeu. Se não souber esclarecê-la, escolha “Tenho dúvidas sobre alguma limitação”.');
+  if (a.Q24?.includes('Outra região') && !filled(a.otherRegion)) fail('Q24','Informe qual é a outra região. Se não souber, selecione “Não sei informar”.');
  }
  return errors;
 }
@@ -103,5 +109,13 @@ export function projectAnswers(a) {
  if(hasSport(a) && a.Q18==='same') result.timing=Object.fromEntries(overlaps(a).map(d=>[d,a.timing[d]]));
  if(a.Q19==='multiple') result.locations=Object.fromEntries(selectedDays(a).map(d=>[d,a.locations[d]]));
  result.gear=Object.fromEntries(activePlaces(a).map(p=>[p,structuredClone(a.gear[p] ?? [])]));
+ // Texto livre é uma descrição da pessoa, não uma regra ou equipamento reconhecido.
+ const machineDetails=Object.fromEntries(activePlaces(a).filter(p=>a.gear[p]?.includes('machines') && filled(a.machineDetails?.[p])).map(p=>[p,a.machineDetails[p]]));
+ const equipmentDetails=Object.fromEntries(activePlaces(a).filter(p=>a.gear[p]?.length && !a.gear[p].includes('none') && filled(a.equipmentDetails?.[p])).map(p=>[p,a.equipmentDetails[p]]));
+ if(Object.keys(machineDetails).length) result.machineDetails=machineDetails;
+ if(Object.keys(equipmentDetails).length) result.equipmentDetails=equipmentDetails;
+ if(a.Q22==='yes' && a.Q24?.includes('Outra região') && filled(a.otherRegion)) result.otherRegion=a.otherRegion;
+ const notes=Object.fromEntries(stepQuestions.map((_,i)=>[i,a.notes?.[i]]).filter(([,value])=>filled(value)));
+ if(Object.keys(notes).length) result.notes=notes;
  return result;
 }

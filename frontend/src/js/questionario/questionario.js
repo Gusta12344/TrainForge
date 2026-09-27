@@ -88,7 +88,9 @@ function paintErrors(moveFocus) {
   message.hidden=!errors[q];
   group.querySelectorAll('input,select,textarea').forEach(input=>{
    input.setAttribute('aria-invalid',String(Boolean(errors[q])));
-   if(errors[q]) input.setAttribute('aria-describedby',`error-${q}`); else input.removeAttribute('aria-describedby');
+   const descriptions=(input.getAttribute('aria-describedby')||'').split(' ').filter(id=>id&&id!==`error-${q}`);
+   if(errors[q]) descriptions.push(`error-${q}`);
+   if(descriptions.length) input.setAttribute('aria-describedby',descriptions.join(' ')); else input.removeAttribute('aria-describedby');
   });
   if(errors[q]&&wasHidden) animate(message,[{opacity:0},{opacity:1}],140);
  }
@@ -96,7 +98,7 @@ function paintErrors(moveFocus) {
  const entries=Object.entries(errors);
  summary.hidden=entries.length<2;
  if(entries.length>=2) summary.innerHTML=`<h2>Revise ${entries.length} respostas</h2><ul>${entries.map(([q,message])=>`<li><a href="#group-${q}" data-error-link="${q}">${esc(questions[q])} ${esc(message)}</a></li>`).join('')}</ul>`;
- if(moveFocus&&entries.length) focusVisible(entries.length>1?summary:document.querySelector(`#group-${entries[0][0]} input, #group-${entries[0][0]} select, #group-${entries[0][0]} button`));
+ if(moveFocus&&entries.length) focusVisible(entries.length>1?summary:document.querySelector(`#group-${entries[0][0]} input, #group-${entries[0][0]} select, #group-${entries[0][0]} textarea, #group-${entries[0][0]} button`));
  if(!moveFocus) rearrange(body,positionsBefore,anchor,anchorTop);
 }
 function remember() {
@@ -173,7 +175,7 @@ form.addEventListener('change',event=>{
  refreshNavigation();
 });
 form.addEventListener('focusout',event=>{
- if(attempted&&event.target.matches('input,select')) {errors=validateStep(answers,step);paintErrors(false);}
+ if(attempted&&event.target.matches('input,select,textarea')) {errors=validateStep(answers,step);paintErrors(false);}
 });
 form.addEventListener('focusin',event=>{
  if(!event.target.matches('input:focus-visible,select:focus-visible,textarea:focus-visible')) return;
@@ -214,7 +216,7 @@ document.addEventListener('click',event=>{
   return;
  }
  if(link.hasAttribute('data-edit')) {editing=Number(link.dataset.edit);go(editing,{edit:true});return;}
- if(link.hasAttribute('data-error-link')) {event.preventDefault();focusVisible(document.querySelector(`#group-${link.dataset.errorLink} input, #group-${link.dataset.errorLink} select, #group-${link.dataset.errorLink} button`));return;}
+ if(link.hasAttribute('data-error-link')) {event.preventDefault();focusVisible(document.querySelector(`#group-${link.dataset.errorLink} input, #group-${link.dataset.errorLink} select, #group-${link.dataset.errorLink} textarea, #group-${link.dataset.errorLink} button`));return;}
  if(link.hasAttribute('data-apply-time')) {
   if(!(parseNumber(answers.commonTime)>0)) {announce('Informe um tempo maior que zero antes de aplicar.');focusVisible(document.getElementById('commonTime'));return;}
   selectedDays(answers).forEach(d=>{answers.times[d]=answers.commonTime;}); dirty=true;patchBlocks();announce('Tempo aplicado aos dias selecionados.');return;

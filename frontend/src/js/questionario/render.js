@@ -7,6 +7,9 @@ export function choice(name, choices, value, {multiple=false, style='', exclusiv
 function field(name, title, value, {unit='',type='text',mode='',placeholder=''}={}) {
  return `<label class="text-field" for="${esc(name)}"><span>${esc(title)}</span><span class="input-wrap"><input id="${esc(name)}" name="${esc(name)}" type="${type}" value="${esc(value)}" ${mode?`inputmode="${mode}"`:''} ${placeholder?`placeholder="${esc(placeholder)}"`:''} autocomplete="off">${unit?`<span class="unit">${unit}</span>`:''}</span></label>`;
 }
+function textarea(name,title,value,{hint='',placeholder=''}={}) {
+ return `<label class="text-field" for="${esc(name)}"><span>${esc(title)}</span><textarea id="${esc(name)}" name="${esc(name)}" rows="4" ${hint?`aria-describedby="help-${esc(name)}"`:''} ${placeholder?`placeholder="${esc(placeholder)}"`:''}>${esc(value)}</textarea></label>${hint?`<p class="question-help textarea-help" id="help-${esc(name)}">${esc(hint)}</p>`:''}`;
+}
 function select(name,title,value,choices) {
  return `<label class="text-field" for="${esc(name)}"><span>${esc(title)}</span><select id="${esc(name)}" name="${esc(name)}"><option value="">Selecione</option>${choices.map(([v,t])=>`<option value="${esc(v)}" ${v===value?'selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
 }
@@ -38,15 +41,17 @@ function content(q,a) {
  case 'Q17': return help('Inclua aquecimento e intervalos no tempo disponível.')+(a.Q15.length?`<div class="same-time">${field('commonTime','Mesmo tempo para os dias selecionados',a.commonTime,{unit:'min',mode:'numeric'})}<button type="button" class="secondary-button" data-apply-time>Aplicar a todos</button></div><div class="fields-grid">${selectedDays(a).map(d=>field(`times.${d}`,days[d],a.times[d],{unit:'min',mode:'numeric'})).join('')}</div>`:help('Os campos aparecerão depois que você escolher os dias.'));
  case 'Q18': return choice(q,options[q],a[q])+ (a.Q18==='same'&&overlaps(a).length?`<div class="follow-up fields-grid">${overlaps(a).map(d=>select(`timing.${d}`,days[d],a.timing[d],[['before','Antes do esporte'],['after','Depois do esporte'],['unknown','Horário ainda não definido']])).join('')}</div>`:'');
  case 'Q19': return choice(q,options[q],a[q],{style:'two-cols'})+(a.Q19==='multiple'?`<div class="follow-up fields-grid">${selectedDays(a).map(d=>select(`locations.${d}`,days[d],a.locations[d],places)).join('')}</div>`:'');
- case 'Q20': return activePlaces(a).map(p=>`<fieldset class="equipment-group" data-motion-key="${p}"><legend>${esc(places.find(x=>x[0]===p)?.[1])}</legend>${choice(`gear.${p}`,equipment,a.gear[p],{multiple:true,style:'two-cols',exclusive:['none']})}${a.gear[p]?.includes('machines')?note('A seleção das máquinas específicas ainda não está disponível.') : ''}${a.gear[p]?.includes('unknown')?note('Equipamentos que você não identificou não serão considerados disponíveis.') : ''}</fieldset>`).join('')||help('Escolha primeiro onde você irá treinar.');
+ case 'Q20': return activePlaces(a).map(p=>`<fieldset class="equipment-group" data-motion-key="${p}"><legend>${esc(places.find(x=>x[0]===p)?.[1])}</legend>${choice(`gear.${p}`,equipment,a.gear[p],{multiple:true,style:'two-cols',exclusive:['none']})}${a.gear[p]?.includes('machines')?`<div class="follow-up">${textarea(`machineDetails.${p}`,'Quais máquinas estão disponíveis? (opcional)',a.machineDetails?.[p],{hint:'Liste todas as máquinas que souber identificar, uma por linha se preferir. Se não souber o nome, descreva o equipamento ou deixe em branco.',placeholder:'Ex.: leg press, cadeira extensora, mesa flexora…'})}</div>`:''}${a.gear[p]?.length&&!a.gear[p].includes('none')?`<div class="follow-up">${textarea(`equipmentDetails.${p}`,a.gear[p].includes('other')?'Quais são os outros equipamentos?':'Mais detalhes sobre os equipamentos (opcional)',a.equipmentDetails?.[p],{hint:'Descreva outros equipamentos, ajustes, quantidades ou limitações do que está disponível. Inclua os detalhes que considerar necessários.'})}</div>`:''}${a.gear[p]?.includes('unknown')?note('Descreva o que souber. Equipamentos não identificados não serão presumidos disponíveis.') : ''}</fieldset>`).join('')||help('Escolha primeiro onde você irá treinar.');
  case 'Q22': return help('Informe restrições já identificadas por um profissional de saúde ou de educação física. Este formulário não realiza diagnóstico.')+choice(q,options[q],a[q])+(a.Q22==='unsure'?note('Sua dúvida aparecerá na revisão. Este questionário não avalia nem libera a prática de exercícios.'):'');
- case 'Q23': return note('O detalhamento das orientações ainda não está disponível. Sua indicação de restrição aparecerá na revisão.');
- case 'Q24': return choice(q,options[q],a[q],{multiple:true,style:'two-cols',exclusive:['none','unknown']});
+ case 'Q23': return textarea(q,a.Q22==='unsure'?'Descreva sua dúvida ou limitação, se souber (opcional)':'Descreva as orientações ou restrições recebidas',a[q],{hint:'Você pode informar mais de uma orientação, incluindo movimentos a evitar ou limites já indicados pelo profissional. O texto será apresentado na revisão; ele não equivale a uma avaliação ou liberação para exercícios.'});
+ case 'Q24': return choice(q,options[q],a[q],{multiple:true,style:'two-cols',exclusive:['none','unknown']})+(a.Q24?.includes('Outra região')?`<div class="follow-up">${field('otherRegion','Qual é a outra região?',a.otherRegion)}</div>`:'');
  default: return choice(q,options[q],a[q],{style:'two-cols'});
  }
 }
 export function blocks(step,a) {
- return stepQuestions[step].filter(q=>applies(q,a)).map(q=>({id:q,html:`<fieldset class="question ${['Q05','Q06','Q07'].includes(q)?'numeric-question':''}" id="group-${q}" data-block="${q}"><legend>${questions[q]}</legend>${content(q,a)}<p class="field-error" id="error-${q}" hidden></p></fieldset>`}));
+ const result=stepQuestions[step].filter(q=>applies(q,a)).map(q=>({id:q,html:`<fieldset class="question ${['Q05','Q06','Q07'].includes(q)?'numeric-question':''}" id="group-${q}" data-block="${q}"><legend>${questions[q]}</legend>${content(q,a)}<p class="field-error" id="error-${q}" hidden></p></fieldset>`}));
+ result.push({id:`notes-${step}`,html:`<div class="question additional-notes" id="group-notes-${step}" data-block="notes-${step}">${textarea(`notes.${step}`,`Observações sobre ${steps[step].toLowerCase()} (opcional)`,a.notes?.[step],{hint:'Quer explicar algo que as opções não cobrem? Acrescente os detalhes que considerar necessários. Eles aparecerão no resumo para você conferir.'})}</div>`});
+ return result;
 }
 const descriptions = [
  'Defina a prioridade do seu programa.', 'Seu ponto de partida ajuda a organizar o programa.', 'O que já faz parte da sua semana também conta.',
@@ -67,14 +72,18 @@ export function renderReview(a) {
   for(const q of qs.filter(q=>applies(q,a))) {
    if(q==='Q13') { rows+=row('Semana',p.variable?`A partir de ${p.week?.split('-').reverse().join('/')}`:'Rotina habitual'); rows+=p.sportEvents.map((e,i)=>row(`Compromisso ${i+1}`,eventDescription(e,true))).join(''); continue; }
    if(q==='Q17') { rows+=row('Tempo disponível',selectedDays(a).map(d=>`${days[d]}: ${p.times[d]} min`).join(' · ')); continue; }
-   if(q==='Q20') { rows+=activePlaces(a).map(loc=>row(`Equipamentos · ${places.find(x=>x[0]===loc)?.[1]}`,(p.gear[loc]??[]).map(v=>equipment.find(x=>x[0]===v)?.[1]).join(', '))).join(''); continue; }
-   if(q==='Q23') { rows+=row(questions[q],'Detalhamento de orientações indisponível.'); continue; }
+   if(q==='Q20') { rows+=activePlaces(a).map(loc=>{
+    const place=places.find(x=>x[0]===loc)?.[1];
+    return row(`Equipamentos · ${place}`,(p.gear[loc]??[]).map(v=>equipment.find(x=>x[0]===v)?.[1]).join(', '))+(p.machineDetails?.[loc]?row(`Máquinas informadas · ${place}`,p.machineDetails[loc]):'')+(p.equipmentDetails?.[loc]?row(`Detalhes dos equipamentos · ${place}`,p.equipmentDetails[loc]):'');
+   }).join(''); continue; }
    rows+=row(questions[q],joins(q)+({Q05:' anos',Q06:' cm',Q07:' kg',Q16:' dias'}[q]??''));
    if(q==='Q11' && p.otherSport) rows+=row('Outro esporte',p.otherSport);
    if(q==='Q14'&&p.otherEvents) rows+=p.otherEvents.map((e,i)=>row(`Outra atividade ${i+1}`,eventDescription(e,false))).join('');
    if(q==='Q18'&&p.timing) rows+=Object.entries(p.timing).map(([d,v])=>row(days[d],{before:'Antes do esporte',after:'Depois do esporte',unknown:'Horário ainda não definido'}[v])).join('');
    if(q==='Q19'&&p.locations) rows+=Object.entries(p.locations).map(([d,v])=>row(days[d],places.find(x=>x[0]===v)?.[1])).join('');
+   if(q==='Q24'&&p.otherRegion) rows+=row('Outra região',p.otherRegion);
   }
+  if(p.notes?.[s]) rows+=row('Observações adicionais',p.notes[s]);
   return `<section class="review-section" id="review-${s}"><div class="review-heading"><h2><span aria-hidden="true">${String(s+1).padStart(2,'0')}</span> ${steps[s]}</h2><button type="button" class="text-button" id="edit-${s}" data-edit="${s}" aria-label="Editar ${steps[s]}">${icon('pencil')} Editar</button></div><dl>${rows}</dl></section>`;
  }).join('')+`<div class="generation-notice">${icon('info')}<div><strong>Geração de programas indisponível</strong><p>Você pode conferir e editar suas respostas. A geração de programas ainda não está disponível, e as respostas não são salvas ao sair desta página.</p></div></div>`;
 }
