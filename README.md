@@ -4,8 +4,6 @@ Sistema web para gerar programas de treinamento personalizados a partir do perfi
 
 Projeto desenvolvido para a disciplina de **Projeto Interdisciplinar III**, do curso de **Análise e Desenvolvimento de Sistemas**, no segundo semestre de 2026.
 
-**Para testar em outra máquina, siga [Executar a interface](#executar-a-interface).** A versão atual permite testar as telas de login e cadastro; ainda não há autenticação real ou geração de treinos.
-
 ## Integrantes
 
 | Integrante | GitHub | Responsabilidade principal |
@@ -83,129 +81,55 @@ Na primeira interface, Vite executa o servidor de desenvolvimento e gera os arqu
 
 Esses critérios serão medidos durante os testes da implementação.
 
-## Estado do projeto
+## Estado atual
 
-Existe uma **prévia interativa de login e cadastro**, com identidade visual, logo em SVG, layout responsivo, navegação, validação de preenchimento e controle para mostrar/ocultar senha. As telas sorteiam uma entre cinco fotografias de preparação física a cada carregamento, mantendo o fundo fixo durante o preenchimento e na transição entre as duas telas. A entrada revela os títulos por linha e apresenta os campos em sequência. Foto e linhas respondem discretamente ao mouse em camadas diferentes; campos têm foco iluminado e o botão tem reflexo e resposta ao pressionar. Login e cadastro reposicionam os campos suavemente, mantendo a marca e a foto. As mensagens de erro expandem e recolhem sem saltos.
+Esta cópia já inclui cadastro e login reais, sessões de acesso, questionário de sete etapas e salvamento das respostas no MySQL. O usuário pode entrar novamente e revisar ou editar o perfil salvo. O servidor valida as respostas antes de gravá-las e associa cada perfil à própria conta.
 
-**A prévia não cria contas, não autentica e não envia nem persiste os dados digitados.** Os formulários informam essa limitação quando os campos válidos são submetidos. Se o JavaScript não carregar, os controles permanecem desabilitados. A regra de 12 a 128 caracteres para nova senha é uma proposta da interface e precisa ser alinhada com o servidor.
+O gerador de treinos, a tela de resultado e a consulta aos programas ainda serão construídos. As tabelas necessárias para exercícios e programas já estão preparadas, mas permanecem vazias nesta etapa. Não há integração com IA.
 
-Ainda não existem API, banco implementado, questionário, painel ou motor de geração. RF01 e RF02 não estão concluídos: dependem da autenticação real e dos testes de integração. A prévia cobre somente as telas de acesso, não o protótipo completo do fluxo do projeto.
+## Rodar neste computador
 
-O planejamento prevê cadastro e questionário em 15/09, primeira geração em 22/09, versão principal testada e publicada em 29/09 e apresentação em 06/10/2026. Essas datas são metas do cronograma e não indicam funcionalidades concluídas.
+O projeto usa uma instância MySQL isolada na porta `3307`, com dados em `database/local-mysql-data/`. Ela não altera o serviço `MySQL80` já instalado na porta `3306`. As credenciais locais foram gravadas em `.env`; não compartilhe esse arquivo. Os dois caminhos são ignorados pelo Git.
 
-## Executar a interface
+Abra três terminais na pasta que contém `package.json`:
 
-### 1. Preparar a máquina
+1. Inicie o banco com `npm run db:local` e deixe o terminal aberto.
+2. Inicie a API com `npm run dev:api` e deixe o terminal aberto.
+3. Inicie a interface com `npm run dev` e abra o endereço mostrado pelo Vite, normalmente `http://127.0.0.1:5173`.
 
-- Instale **Node.js 22.12 ou superior**, com **npm**. Não é necessário instalar Vite globalmente.
-- Tenha **Git** para clonar o repositório, ou receba um ZIP da versão que será testada.
-- Use um navegador atualizado com JavaScript habilitado.
-- Tenha acesso à internet para baixar o projeto e suas dependências na primeira instalação.
+Se esta for uma instalação nova, execute `npm ci` antes. O banco desta cópia já recebeu `npm run db:setup`. Esse comando pode ser repetido com segurança para criar tabelas ausentes.
 
-No terminal (Prompt de Comando/PowerShell no Windows ou terminal do Linux/macOS), confira:
+Para conferir a versão compilada, execute `npm run build` e depois `npm start` enquanto o banco estiver ligado. Acesse `http://127.0.0.1:43117`. Termine cada processo com `Ctrl+C`.
 
-```bash
-node --version
-npm --version
-```
+## Rodar em outra máquina
 
-**Não é necessário instalar MySQL, configurar `.env`, criar uma conta ou obter chaves de API.** Express e MySQL pertencem ao planejamento do sistema; a prévia atual executa somente o front-end. Imagens, ícones e fontes são distribuídos com o projeto e suas dependências.
+O diretório de dados e `.env` são locais e não acompanham o código. Instale MySQL 8.0 ou superior, crie um usuário com permissão para criar o banco `trainforge`, copie `.env.example` para `.env` e informe host, porta, usuário e senha. Execute `npm ci`, `npm run db:setup`, `npm run dev:api` e `npm run dev`. Se usar outra porta para a API, ajuste também o proxy em `vite.config.js`.
 
-### 2. Obter a versão com as telas
+## Rotas da API
 
-Clone a branch `main`, que reúne a versão integrada do projeto:
-
-```bash
-git clone --branch main https://github.com/Gusta12344/TrainForge.git
-cd TrainForge
-```
-
-Se receber um ZIP, extraia o projeto e abra o terminal na pasta que contém `package.json`, `package-lock.json` e `vite.config.js`. Não execute os comandos de instalação dentro de `frontend/`.
-
-### 3. Instalar e iniciar
-
-Na raiz do projeto, execute:
-
-```bash
-npm ci
-npm run dev
-```
-
-`npm ci` instala as versões do `package-lock.json`. Cada pessoa deve instalar as dependências na própria máquina; não copie a pasta `node_modules` de outro computador.
-
-Mantenha o terminal aberto e acesse o endereço exibido pelo Vite, normalmente [http://127.0.0.1:5173](http://127.0.0.1:5173). Se a porta estiver ocupada, o Vite pode usar outra: siga o endereço informado no terminal.
-
-| Tela | Caminho no servidor local |
+| Método e rota | Função |
 | --- | --- |
-| Login | `/` |
-| Cadastro | `/cadastro.html` |
+| `GET /api/health` | Verifica a conexão com o banco. |
+| `POST /api/auth/register` | Cria conta com nome, e-mail e senha; inicia a sessão. |
+| `POST /api/auth/login` | Entra com e-mail e senha. |
+| `POST /api/auth/logout` | Encerra a sessão. |
+| `GET /api/auth/me` | Retorna a conta autenticada. |
+| `GET /api/profile` | Retorna as respostas salvas da própria conta, ou `null`. |
+| `PUT /api/profile` | Valida e salva o questionário completo da própria conta. |
 
-**Não abra os HTMLs com duplo clique ou pelo endereço `file://`.** Os módulos e recursos precisam do servidor Vite. `127.0.0.1` aponta para a própria máquina: quem for testar deve iniciar seu próprio servidor.
+As rotas de perfil exigem autenticação. O navegador recebe uma sessão em cookie `HttpOnly`. O banco armazena somente o hash da senha e o hash do token de sessão. O cadastro nunca aceita um papel administrativo enviado pela interface.
 
-Encerre com `Ctrl+C`. Nas próximas execuções, basta `npm run dev`; execute novamente `npm ci` se receber uma atualização das dependências.
+## Testes
 
-### 4. Conferir o funcionamento
+- `npm test` verifica as regras do questionário, a API e o isolamento de usuários com um banco simulado.
+- `npm run test:db` executa o mesmo percurso principal contra o MySQL real e remove apenas as contas de teste que ele criou.
+- `npm run build` confere a compilação da interface.
 
-1. No login, clique em **Criar conta** e confira a mudança para cadastro.
-2. Envie o formulário vazio: os campos devem mostrar os erros e o primeiro campo inválido deve receber foco.
-3. Preencha com dados fictícios, por exemplo: nome `Pessoa Teste`, e-mail `teste@example.com` e senha `treino-ficticio-2026`.
-4. Confira o botão de mostrar/ocultar senha e envie o cadastro. O resultado esperado é a mensagem de que **nenhuma conta foi criada e nenhum dado foi enviado**.
-5. Volte ao login, preencha e envie. O aviso de que o acesso ainda não está disponível é esperado. Não existe uma conta de demonstração para entrar em um painel.
+## Organização
 
-A ausência de autenticação é uma limitação desta entrega, não um problema de instalação. As animações são reduzidas no celular e desativadas quando a preferência de movimento reduzido está ativa no sistema/navegador.
+- `frontend/`: páginas, estilos e lógica do navegador.
+- `backend/`: API, autenticação, validação, configuração e testes.
+- `database/schema.sql`: tabelas de contas, sessões, perfis, exercícios e programas.
+- `design/`: identidade visual e referências de interface.
 
-### Testes e versão compilada
-
-Na raiz do projeto, use outro terminal ou interrompa o servidor antes de executar:
-
-```bash
-npm test
-npm run build
-npm run preview
-```
-
-`npm test` verifica as regras de validação da interface. `npm run build` gera os arquivos estáticos em `dist/`; `npm run preview` serve esse resultado localmente, no endereço exibido no terminal. Execute o build novamente depois de alterar o código se quiser conferir essas alterações no preview. O preview não publica o projeto na internet.
-
-`node_modules/` e `dist/` são gerados localmente e ignorados pelo Git. A validação no navegador não substitui a validação da futura API.
-
-### Problemas comuns
-
-| Problema | Como resolver |
-| --- | --- |
-| `node` ou `npm` não reconhecido | Instale o Node.js com npm, reabra o terminal e confira as versões. |
-| Erro de versão do Node (`EBADENGINE`) | Use Node.js 22.12 ou superior, conforme `package.json`. |
-| PowerShell bloqueia `npm.ps1` | Execute os comandos no Prompt de Comando, ou use `npm.cmd` no lugar de `npm` no PowerShell. |
-| `package.json` não encontrado (`ENOENT`) | Abra o terminal na raiz do projeto. Se o arquivo não existir na cópia, confira se recebeu a versão com as telas. |
-| Falha de conexão durante `npm ci` | Confira o acesso ao registro npm na rede e tente novamente. Preserve `package-lock.json`. |
-| Página não abre | Mantenha `npm run dev` em execução e confira o endereço/porta que o terminal mostrou. |
-| Formulário desabilitado ou recursos ausentes | Acesse pelo servidor Vite, habilite JavaScript e confira erros no terminal e no console do navegador. |
-| Preview ausente ou desatualizado | Execute `npm run build` antes de `npm run preview`. |
-| Não consigo entrar após preencher os campos | A autenticação ainda não está implementada; o comportamento esperado é o aviso de prévia. |
-
-## Organização atual
-
-```text
-TrainForge/
-├── frontend/
-│   ├── index.html       # Login
-│   ├── cadastro.html    # Cadastro
-│   ├── src/
-│   │   ├── js/          # JavaScript organizado por páginas ou fluxo
-│   │   │   └── auth/    # Interações, navegação e validação de login/cadastro
-│   │   └── styles/      # global.css (base) e auth.css (login/cadastro)
-│   ├── public/assets/   # Logos e fotografias
-│   └── tests/           # Testes de validação
-├── design/              # Conceitos, guia visual e licença da fonte da marca
-├── package.json
-├── package-lock.json
-├── vite.config.js
-└── README.md
-```
-
-Os estilos são divididos por responsabilidade: `frontend/src/styles/global.css` reúne fontes, cores, regras básicas e acessibilidade; `auth.css` contém layout, componentes e animações das telas de acesso. Novas páginas devem importar o global e seu CSS específico. Componentes compartilhados podem ganhar um arquivo próprio quando houver reutilização real. O Vite pode reunir esses arquivos no build; a separação permanece no código-fonte.
-
-Os JavaScripts ficam em `frontend/src/js/`, agrupados pelas páginas que atendem. A pasta `auth/` reúne os módulos de login e cadastro, com `auth.js` como ponto de entrada. As próximas páginas terão suas próprias pastas; módulos compartilhados serão separados quando houver reutilização entre fluxos.
-
-Login e cadastro mantêm seus HTMLs e endereços próprios. `auth-navigation.js` carrega o próximo formulário e atualiza o histórico sem recriar a marca ou sortear outra foto. Se esse carregamento falhar, segue o link normalmente. `auth-motion.js` coordena a entrada e o reposicionamento dos campos com a API nativa de animações do navegador, sem novas dependências. As animações do formulário são encerradas quando a pessoa interage, a aba é ocultada ou a preferência de movimento muda. `photo-motion.js` move foto e linhas em camadas, somente com mouse no desktop. CSS e JavaScript respeitam movimento reduzido; no celular, os deslocamentos e tempos são menores.
-
-`backend/` e `database/` serão introduzidas nas próximas entregas. A direção visual está em [design/GUIA_VISUAL.md](design/GUIA_VISUAL.md).
+O questionário coleta objetivo, idade, altura, peso, experiência, rotina esportiva, dias e tempo disponíveis, local, equipamentos e restrições informadas. A primeira modalidade esportiva prevista é vôlei. A geração futura deve considerar somente combinações de respostas que o projeto decidir atender.

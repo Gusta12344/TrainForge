@@ -3,6 +3,9 @@ import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   root: 'frontend',
+  server: {
+    proxy: { '/api': 'http://127.0.0.1:43117' },
+  },
   build: {
     outDir: '../dist',
     emptyOutDir: true,

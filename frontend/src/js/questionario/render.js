@@ -76,5 +76,5 @@ export function renderReview(a) {
    if(q==='Q19'&&p.locations) rows+=Object.entries(p.locations).map(([d,v])=>row(days[d],places.find(x=>x[0]===v)?.[1])).join('');
   }
   return `<section class="review-section" id="review-${s}"><div class="review-heading"><h2><span aria-hidden="true">${String(s+1).padStart(2,'0')}</span> ${steps[s]}</h2><button type="button" class="text-button" id="edit-${s}" data-edit="${s}" aria-label="Editar ${steps[s]}">${icon('pencil')} Editar</button></div><dl>${rows}</dl></section>`;
- }).join('')+`<div class="generation-notice">${icon('info')}<div><strong>Geração de programas indisponível</strong><p>Você pode conferir e editar suas respostas. A geração de programas ainda não está disponível, e as respostas não são salvas ao sair desta página.</p></div></div>`;
+ }).join('')+`<div class="generation-notice">${icon('info')}<div><strong>Confira e salve seu perfil</strong><p>Você pode editar suas respostas antes de salvá-las. A geração de treinos será conectada na próxima etapa.</p></div></div>`;
 }

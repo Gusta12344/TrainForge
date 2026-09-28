@@ -8,7 +8,11 @@
 
 # Dependências e arquivos gerados
 node_modules/
+.npm-cache/
 dist/
+database/.local-data/
+database/.test-data/
+database/local-mysql-data/
 build/
 coverage/
 .cache/

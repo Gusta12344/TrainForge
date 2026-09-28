@@ -8,14 +8,21 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "dev:api": "node --env-file=.env backend/server.js",
+    "db:setup": "node --env-file=.env backend/setup-db.js",
+    "db:local": "node backend/local-db.js",
+    "test:db": "node --env-file=.env backend/tests/live-smoke.js",
+    "start": "node --env-file=.env backend/server.js",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test frontend/tests/*.test.js"
+    "test": "node --test frontend/tests/*.test.js backend/tests/*.test.js"
   },
   "dependencies": {
     "@fontsource/barlow": "^5.3.0",
     "@fontsource/barlow-condensed": "^5.3.0",
-    "lucide": "^1.46.0"
+    "express": "^5.2.1",
+    "lucide": "^1.46.0",
+    "mysql2": "^3.24.4"
   },
   "devDependencies": {
     "vite": "^8.3.0"
