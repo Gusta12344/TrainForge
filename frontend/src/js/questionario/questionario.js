@@ -1,5 +1,5 @@
 import { createIcons, Activity, Dumbbell, Weight, Volleyball, Check, ArrowRight, ArrowLeft, ChevronDown, Pencil, Plus, Trash2, Info, CircleAlert } from 'lucide';
-import { steps, questions, initialAnswers, stepQuestions, validateStep, toggleMultiple, parseNumber, selectedDays } from './model.js';
+import { steps, questions, initialAnswers, stepQuestions, validateStep, toggleMultiple, parseNumber, selectedDays, projectAnswers } from './model.js';
 import { blocks, heading, renderReview, esc } from './render.js';
 import { reconcile } from './dom.js';
 import { initMotion, entrance, outgoing, enterStep, captureLayout, rearrange, animate, fadeOut, withMotionFocus } from './motion.js';
@@ -15,6 +15,12 @@ const status=document.querySelector('#questionnaire-status');
 let step=0, editing=null, errors={}, attempted=false, dirty=false, removed=null;
 let blockCache=new Map();
 const announce=text=>{status.textContent=text;};
+function showSavedStatus() {
+ const notice=document.querySelector('.generation-notice');
+ if(!notice) return;
+ notice.querySelector('strong').textContent='Respostas salvas';
+ notice.querySelector('p').textContent='Seu perfil está salvo na sua conta. A geração de treinos será conectada na próxima etapa.';
+}
 const focusId=id=>document.getElementById(id)?.focus({preventScroll:true});
 function focusVisible(el) {
  if(!el) return;
@@ -32,9 +38,9 @@ function refreshNavigation() {
  document.querySelector('#step-position').textContent=`Etapa ${step+1} de 7${innerWidth<900?' · '+steps[step]:''}`;
  document.querySelector('.progress-track').innerHTML=steps.map((_,i)=>`<span class="progress-segment ${i===step?'is-current':completed.has(i)&&!Object.keys(validateStep(answers,i)).length?'is-done':''}"></span>`).join('');
  back.hidden=step===0;
- next.disabled=step===6;
- next.innerHTML=`${step===6?'Confirmar respostas e gerar programa':editing!==null?'Voltar à revisão':'Continuar'} <i data-lucide="arrow-right" aria-hidden="true"></i>`;
- document.querySelector('#next-description').textContent=step===6?'Geração de programas indisponível':editing!==null?'Confira suas alterações.':`Próxima etapa: ${steps[step+1]}`;
+ next.disabled=false;
+ next.innerHTML=`${step===6?'Salvar respostas':editing!==null?'Voltar à revisão':'Continuar'} <i data-lucide="arrow-right" aria-hidden="true"></i>`;
+ document.querySelector('#next-description').textContent=step===6?'Seu perfil será salvo na sua conta.':editing!==null?'Confira suas alterações.':`Próxima etapa: ${steps[step+1]}`;
  refreshIcons();
 }
 function mount() {
@@ -189,9 +195,25 @@ form.addEventListener('keydown',event=>{
 });
 // Native double-click events must not advance the newly rendered step a second time.
 next.addEventListener('click',event=>{if(event.detail>1) event.preventDefault();});
-form.addEventListener('submit',event=>{
+form.addEventListener('submit',async event=>{
  event.preventDefault();
- if(step===6) return; // There is deliberately no network adapter until a real contract exists.
+ if(step===6) {
+  const incomplete=[0,1,2,3,4,5].find(i=>Object.keys(validateStep(answers,i)).length);
+  if(incomplete!==undefined) {go(incomplete);attempted=true;errors=validateStep(answers,step);paintErrors(true);return;}
+  next.disabled=true;
+  announce('Salvando suas respostas…');
+  try {
+   const response=await fetch('/api/profile',{method:'PUT',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(projectAnswers(answers))});
+   if(response.status===401) {location.assign('/');return;}
+   const result=await response.json();
+   if(!response.ok) throw new Error(result.error||'Não foi possível salvar as respostas.');
+   dirty=false;
+   showSavedStatus();
+   announce('Respostas salvas na sua conta.');
+  } catch(error) {announce(error.message||'Falha de conexão. Tente salvar novamente.');}
+  finally {next.disabled=false;}
+  return;
+ }
  attempted=true; errors=validateStep(answers,step); paintErrors(true);
  if(Object.keys(errors).length) return;
  completed.add(step);
@@ -223,7 +245,7 @@ document.addEventListener('click',event=>{
  }
  if(link.dataset.add) {
   const kind=link.dataset.add;
-  const id=crypto.randomUUID(); answers[kind].push({id,days:[]}); removed=null;dirty=true;
+  const id=crypto.randomUUID(); answers[kind].push(kind==='sportEvents'?{id}:{id,days:[]}); removed=null;dirty=true;
   patchBlocks();document.querySelector('[data-undo]')?.remove();
   focusVisible(document.querySelector(`[data-event="${id}"] input, [data-event="${id}"] select`));return;
  }
@@ -252,7 +274,34 @@ window.addEventListener('popstate',event=>{
  if(event.state?.questionnaire && visited.has(event.state.step)) go(event.state.step,{history:false});
 });
 window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
-initMotion(); mount();
-document.querySelector('#questionnaire-actions').hidden=false;
+document.querySelector('#logout').addEventListener('click',async()=>{
+ try { await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'}); } finally { dirty=false; location.assign('/'); }
+});
+initMotion();
+async function bootstrap() {
+ try {
+  const session=await fetch('/api/auth/me',{credentials:'same-origin'});
+  if(session.status===401) {location.assign('/');return;}
+  if(!session.ok) throw new Error('Não foi possível verificar sua conta.');
+  const profile=await fetch('/api/profile',{credentials:'same-origin'});
+  if(profile.status===401) {location.assign('/');return;}
+  if(!profile.ok) throw new Error('Não foi possível carregar suas respostas.');
+  const saved=await profile.json();
+  if(saved.answers) {
+   Object.assign(answers,saved.answers);
+   for(let i=0;i<7;i++) visited.add(i);
+   for(let i=0;i<6;i++) completed.add(i);
+   step=6;
+   window.history.replaceState({questionnaire:true,step:6},'',location.pathname);
+  }
+  mount();
+  if(saved.answers) showSavedStatus();
+  document.querySelector('#questionnaire-actions').hidden=false;
+  entrance();
+ } catch(error) {
+  content.innerHTML='<h1>Não foi possível abrir o questionário.</h1><p>Confira a conexão com o servidor e recarregue a página.</p>';
+  announce(error.message);
+ }
+}
+void bootstrap();
 window.addEventListener('resize',()=>{document.querySelector('#step-position').textContent=`Etapa ${step+1} de 7${innerWidth<900?' · '+steps[step]:''}`;});
-entrance();

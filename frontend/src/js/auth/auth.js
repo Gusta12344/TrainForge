@@ -84,7 +84,7 @@ function initializeAuth() {
     });
   }
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const errors = validateAuth(values(), mode);
     fields.forEach((field) => showFieldError(field, errors[field.name]));
@@ -95,12 +95,32 @@ function initializeAuth() {
       return;
     }
 
-    // A API será integrada em outra entrega. Não simular login, salvar ou enviar senhas.
-    feedback.textContent = mode === 'register'
-      ? 'Esta é uma prévia das telas. Nenhuma conta foi criada e seus dados não foram enviados.'
-      : 'Esta é uma prévia das telas. O acesso à conta ainda não está disponível e seus dados não foram enviados.';
+    const submit = form.querySelector('[type="submit"]');
+    submit.disabled = true;
+    feedback.textContent = mode === 'register' ? 'Criando sua conta…' : 'Entrando…';
     feedback.hidden = false;
-    feedback.focus();
+    try {
+      const response = await fetch(mode === 'register' ? '/api/auth/register' : '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify(values()),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        if (result.field) showFieldError(form.elements[result.field], result.error);
+        feedback.textContent = result.error || 'Não foi possível concluir. Tente novamente.';
+        feedback.focus();
+        return;
+      }
+      password.value = '';
+      location.assign('/questionario.html');
+    } catch {
+      feedback.textContent = 'Não foi possível conectar ao servidor. Confira se ele está ligado.';
+      feedback.focus();
+    } finally {
+      submit.disabled = false;
+    }
   });
 
   // Evita reexibir uma senha digitada ao voltar pelo histórico do navegador.

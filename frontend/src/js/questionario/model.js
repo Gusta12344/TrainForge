@@ -1,4 +1,4 @@
-// Respostas em memória. Persistência e contrato da API ainda não integrados.
+// Estado do preenchimento no navegador; o envio à API acontece na revisão.
 export const steps = ['Objetivo', 'Perfil e experiência', 'Rotina esportiva', 'Disponibilidade', 'Local e equipamentos', 'Restrições', 'Revisão das respostas'];
 export const days = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
 export const places = [['gym', 'Academia'], ['home', 'Em casa'], ['club', 'Clube, escola ou equipe'], ['outside', 'Área externa']];

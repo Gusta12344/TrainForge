@@ -1,227 +1,82 @@
 # TrainForge
 
-Sistema web para gerar programas de treinamento personalizados a partir do perfil, dos objetivos, da disponibilidade e da rotina esportiva do usuário.
+Sistema web para gerar programas de treinamento personalizados a partir do perfil, dos objetivos, da disponibilidade e da rotina esportiva do usuário. Projeto da disciplina de Projeto Interdisciplinar III, Análise e Desenvolvimento de Sistemas, segundo semestre de 2026.
 
-Projeto desenvolvido para a disciplina de **Projeto Interdisciplinar III**, do curso de **Análise e Desenvolvimento de Sistemas**, no segundo semestre de 2026.
-
-**Para testar em outra máquina, siga [Executar a interface](#executar-a-interface).** A versão atual permite testar login, cadastro, questionário e uma tela demonstrativa de treino com dados fictícios salvos no navegador. Ainda não há autenticação real, salvamento das respostas ou geração personalizada de treinos.
-
-## Integrantes
+## Equipe
 
 | Integrante | GitHub | Responsabilidade principal |
 | --- | --- | --- |
 | Gustavo Maciel Huçulak | [Gusta12344](https://github.com/Gusta12344) | Gestão e Análise |
 | Arthur Godoy Caminski | [Subarashii-Core](https://github.com/Subarashii-Core) | Solução Técnica |
 
-Os papéis indicam quem responde por cada frente. Os dois participam da programação, da documentação, dos testes e das revisões, com commits próprios.
+Ambos participam da programação, documentação, testes e revisões.
 
-## Proposta
+## Proposta e escopo
 
-O TrainForge foi pensado para quem quer organizar seus treinos, mas não sabe escolher exercícios ou montar um programa por conta própria. A pessoa informa seu objetivo, experiência, disponibilidade, estrutura de treino e prática esportiva. Com essas informações, o sistema organiza um programa por dias e sessões e apresenta os exercícios com orientações de execução.
+A pessoa cria uma conta, preenche e confirma o questionário, e então deve receber um programa dividido por dias e sessões. O motor futuro combinará respostas, catálogo de exercícios e regras do projeto, sem depender de API de inteligência artificial. Hipertrofia, força e preparação física geral para vôlei são os objetivos da primeira versão. Futebol ficou fora desta entrega.
 
-A primeira versão prevê **hipertrofia, força e preparação física para vôlei** como caminhos de objetivo principal. No caminho esportivo, o usuário pode escolher um objetivo complementar, como hipertrofia. Vôlei foi definido como a modalidade esportiva inicial e será tratado de forma geral, sem exigir distinção entre quadra e praia; futebol não faz parte desta primeira entrega.
+Os requisitos obrigatórios RF01–RF05 abrangem cadastro, login, questionário, confirmação do perfil, geração e consulta do programa atual. RF06, RF07, RF09 e RF10 preveem substituição compatível, histórico de programas, catálogo e regras administráveis. RF08, exportação textual do programa atual em PDF sem imagens, é desejável. O histórico é de **programas gerados**: os anteriores podem ser consultados, mas não editados nem reativados. Administradores manterão catálogo e parâmetros; cadastro público não concede esse papel.
 
-## Como o sistema deve funcionar
+O sistema não oferece aplicativo nativo, edição livre do programa, diagnóstico ou prescrição clínica. A tela demonstrativa descrita abaixo registra execução localmente, mas não representa acompanhamento persistido na conta ou análise de progressão.
 
-1. O usuário cria uma conta e faz login.
-2. Preenche um questionário sobre seu perfil, objetivo, experiência, dias e tempo disponíveis, estrutura, prioridades e restrições previamente identificadas. Se pratica esporte, informa também sua rotina esportiva.
-3. Confere o resumo das respostas e pode corrigir os dados antes de confirmar.
-4. O gerador combina as informações do perfil com a base de exercícios e as regras de geração.
-5. O programa fica salvo e pode ser consultado por dia e sessão, com séries, repetições, instruções e observações.
-6. Conforme as funcionalidades implementadas, o usuário pode solicitar substituições, consultar programas anteriores e exportar o programa atual em PDF.
+## Estado implementado
 
-A geração será orientada por algoritmos e regras do projeto. Não há integração obrigatória com uma API de inteligência artificial no escopo inicial.
+- Cadastro e login usam a API Express e sessões por cookie `HttpOnly`. Senhas recebem hash com `scrypt` e sal; a API salva somente o hash do token de sessão.
+- O questionário de sete etapas permite revisão e edição, inclusive descrições de restrições ou dúvidas, máquinas, outros equipamentos, outra região do corpo e observações. O servidor valida as respostas e as salva no MySQL por conta. Ao voltar, o usuário pode revisar e alterar o perfil salvo.
+- `/treino.html` é uma **demonstração isolada** com programa A/B/C e histórico fictícios. Ela permite registrar séries, aquecimento e descanso neste navegador usando `localStorage`. Seus exercícios, imagens e vídeos não vêm do banco nem de um gerador. Consulte [as regras da demonstração](design/MEU_TREINO.md).
+- O esquema do banco tem contas, sessões, perfis e tabelas iniciais para catálogo e programas. Programas futuros devem gravar o conteúdo completo em `content_snapshot`, preservando o histórico mesmo após alterações no catálogo. Ainda não há catálogo populado, motor de geração, API de programas, substituição ou PDF. A tela de treino não mostra um programa da conta.
 
-## Perfis de acesso
-
-- **Usuário comum:** preenche o próprio perfil, gera e consulta seus programas e solicita substituições.
-- **Administrador:** mantém o catálogo de exercícios e os parâmetros usados na geração.
-
-## Escopo e prioridades
-
-As prioridades seguem os requisitos definidos pela dupla. A lista representa o planejamento, não funcionalidades já concluídas.
-
-| Prioridade | Funcionalidades previstas |
-| --- | --- |
-| Obrigatório - RF01 a RF05 | Cadastro, login, questionário, confirmação do perfil, geração e consulta guiada do programa atual salvo. |
-| Importante - RF06, RF07, RF09 e RF10 | Substituição automática de exercícios com registro do motivo, histórico de programas, administração dos exercícios e manutenção das regras. |
-| Desejável - RF08 | Exportação do programa atual completo em PDF, com orientações textuais e sem imagens. |
-
-O histórico guarda **programas gerados**, que podem ser consultados posteriormente. Programas antigos não podem ser editados ou reativados como atuais nesta versão.
-
-### Fora da primeira versão
-
-- Acompanhamento persistido em conta, análise de progressão e prescrição individualizada. A tela demonstrativa descrita abaixo registra cargas e repetições apenas no navegador.
-- Aplicativo nativo para Android ou iOS.
-- Edição livre de exercícios, séries e repetições pelo usuário.
-- Atendimento a todos os esportes, planos alimentares e integrações com dispositivos.
-- Análise avançada dos motivos de substituição e recursos de IA generativa.
-
-O sistema não realiza diagnóstico, tratamento ou reabilitação de lesões e não substitui acompanhamento profissional, conforme as restrições do projeto.
+As datas do cronograma são metas, não prova de implementação. Os critérios de qualidade previstos incluem 360 px sem rolagem horizontal, contraste de 4,5:1 para texto normal, 18 de 20 gerações em até 5 segundos e cinco páginas em até 3 segundos em 4G simulado. O desempenho do gerador e da rede ainda não foi medido.
 
 ## Tecnologias
 
-Escolhas registradas na atividade de 8 de setembro de 2026:
+HTML, CSS e JavaScript sem framework no navegador; Vite para desenvolvimento e build; Node.js com Express na API; MySQL 8 para persistência. Lucide fornece ícones e Fontsource distribui Barlow localmente. As dependências estão fixadas em `package-lock.json`.
 
-| Camada | Tecnologia | Motivo |
-| --- | --- | --- |
-| Front-end | HTML, CSS e JavaScript | Construção das telas e interações com as tecnologias já conhecidas pela dupla. |
-| Back-end | Node.js com Express | API em JavaScript para autenticação, geração e persistência dos programas. |
-| Banco de dados | MySQL | Modelo relacional para usuários, programas, sessões, exercícios e regras. |
+## Executar
 
-O front-end está documentado sem framework nesta etapa. Mudanças nas tecnologias devem ser registradas no README e na documentação correspondente.
+É necessário Node.js 22.12 ou superior, npm e MySQL 8. O projeto pode usar um MySQL já instalado. O script `npm run db:local` é específico para uma instância isolada configurada previamente no Windows; não cria um banco novo automaticamente.
 
-Na primeira interface, Vite executa o servidor de desenvolvimento e gera os arquivos estáticos; Lucide fornece os ícones; Fontsource distribui localmente as fontes Barlow e Barlow Condensed. Essas ferramentas não alteram a escolha de HTML, CSS e JavaScript sem framework. As versões estão fixadas no `package-lock.json`.
+1. Execute `npm ci` na raiz do repositório.
+2. Copie `.env.example` para `.env` e preencha `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` para seu MySQL. `.env` é local e ignorado pelo Git.
+3. Execute `npm run db:setup` para criar o banco e as tabelas ausentes. A conta MySQL usada aqui precisa poder criar o banco informado. Se a tabela `programs` já existir sem `content_snapshot`, o script a atualiza apenas quando estiver vazia; havendo registros, interrompe a operação para revisão dos dados.
+4. Em um terminal, execute `npm run dev:api`. Em outro, execute `npm run dev` e abra o endereço exibido pelo Vite, normalmente [http://127.0.0.1:5173](http://127.0.0.1:5173).
 
-## Critérios de qualidade previstos
+O Vite encaminha `/api` para `http://127.0.0.1:43117`. Se alterar `API_PORT` no `.env`, ajuste também o proxy em [vite.config.js](vite.config.js). Para servir o build pela API, execute `npm run build` e `npm start`, com o MySQL ligado, e acesse [http://127.0.0.1:43117](http://127.0.0.1:43117). `npm run preview` serve somente os arquivos estáticos e não substitui a API.
 
-- Interface responsiva a partir de 360 px de largura, sem rolagem horizontal nas telas principais.
-- Pelo menos 18 de 20 gerações de teste apresentadas em até 5 segundos após a confirmação.
-- Cinco páginas principais carregadas em até 3 segundos em conexão 4G simulada.
-- Senhas armazenadas com hash e sal, nunca em texto puro.
-- Contraste mínimo de 4,5:1 para textos normais nas telas principais.
-
-Esses critérios serão medidos durante os testes da implementação.
-
-## Estado do projeto
-
-Existe uma **prévia interativa de login e cadastro**, com identidade visual, logo em SVG, layout responsivo, navegação, validação de preenchimento e controle para mostrar/ocultar senha. As telas sorteiam uma entre cinco fotografias de preparação física a cada carregamento, mantendo o fundo fixo durante o preenchimento e na transição entre as duas telas. A entrada revela os títulos por linha e apresenta os campos em sequência. Foto e linhas respondem discretamente ao mouse em camadas diferentes; campos têm foco iluminado e o botão tem reflexo e resposta ao pressionar. Login e cadastro reposicionam os campos suavemente, mantendo a marca e a foto. As mensagens de erro expandem e recolhem sem saltos.
-
-**A prévia não cria contas, não autentica e não envia nem persiste os dados digitados.** Os formulários informam essa limitação quando os campos válidos são submetidos. Se o JavaScript não carregar, os controles permanecem desabilitados. A regra de 12 a 128 caracteres para nova senha é uma proposta da interface e precisa ser alinhada com o servidor.
-
-O **questionário interativo** está disponível em `/questionario.html`, com sete etapas, perguntas condicionais, validação, revisão e retorno para edição. É possível descrever as orientações recebidas ou dúvidas sobre restrições, identificar outra região do corpo, listar máquinas e detalhar outros equipamentos por local. Cada etapa de perguntas também oferece observações opcionais. Textos com várias linhas são preservados ao navegar e aparecem na revisão. Ao mudar uma resposta, os detalhes que deixam de se aplicar ficam fora do resumo, mantendo o rascunho para eventual retorno durante o preenchimento.
-
-As respostas ficam somente na memória da página e são perdidas ao recarregar ou sair. O botão final de geração permanece desabilitado. Descrições livres não são interpretadas automaticamente como equipamentos reconhecidos ou regras de treino. Catálogo, regras de geração e tratamento de restrições ainda precisam ser integrados.
-
-O **Meu treino demonstrativo** está disponível em `/treino.html`. Ele apresenta um programa fictício A/B/C, agenda de segunda, quarta e sexta, histórico de exemplo da semana anterior e registro de séries, aquecimento e descanso. O calendário assinala treinos concluídos, dias de descanso passados e treinos não realizados ou incompletos. As execuções são salvas em `localStorage` neste navegador; a tela permite consultar registros encerrados, retomar um treino em andamento e restaurar o exemplo mediante confirmação. Vídeos reais do Muscle & Strength e do Bodybuilding.com são abertos sob demanda via YouTube; a reprodução exige conexão e pode depender das permissões da plataforma. O programa, as cargas anteriores e as imagens ilustrativas são exemplos, sem prescrição individualizada. As regras e fontes estão em [design/MEU_TREINO.md](design/MEU_TREINO.md).
-
-Ainda não existem API, banco implementado ou motor de geração nesta cópia. A tela de treino funciona isoladamente dos formulários de acesso e questionário; RF01 e RF02 dependem da autenticação real, e o fluxo RF03–RF05 ainda depende de persistência no servidor, geração e testes de integração.
-
-O planejamento prevê cadastro e questionário em 15/09, primeira geração em 22/09, versão principal testada e publicada em 29/09 e apresentação em 06/10/2026. Essas datas são metas do cronograma e não indicam funcionalidades concluídas.
-
-## Executar a interface
-
-### 1. Preparar a máquina
-
-- Instale **Node.js 22.12 ou superior**, com **npm**. Não é necessário instalar Vite globalmente.
-- Tenha **Git** para clonar o repositório, ou receba um ZIP da versão que será testada.
-- Use um navegador atualizado com JavaScript habilitado.
-- Tenha acesso à internet para baixar o projeto e suas dependências na primeira instalação.
-
-No terminal (Prompt de Comando/PowerShell no Windows ou terminal do Linux/macOS), confira:
-
-```bash
-node --version
-npm --version
-```
-
-**Não é necessário instalar MySQL, configurar `.env`, criar uma conta ou obter chaves de API.** Express e MySQL pertencem ao planejamento do sistema; a prévia atual executa somente o front-end. Imagens, ícones e fontes são distribuídos com o projeto e suas dependências.
-
-### 2. Obter a versão com as telas
-
-Clone a branch `main`, que reúne a versão integrada do projeto:
-
-```bash
-git clone --branch main https://github.com/Gusta12344/TrainForge.git
-cd TrainForge
-```
-
-Se receber um ZIP, extraia o projeto e abra o terminal na pasta que contém `package.json`, `package-lock.json` e `vite.config.js`. Não execute os comandos de instalação dentro de `frontend/`.
-
-### 3. Instalar e iniciar
-
-Na raiz do projeto, execute:
-
-```bash
-npm ci
-npm run dev
-```
-
-`npm ci` instala as versões do `package-lock.json`. Cada pessoa deve instalar as dependências na própria máquina; não copie a pasta `node_modules` de outro computador.
-
-Mantenha o terminal aberto e acesse o endereço exibido pelo Vite, normalmente [http://127.0.0.1:5173](http://127.0.0.1:5173). Se a porta estiver ocupada, o Vite pode usar outra: siga o endereço informado no terminal.
-
-| Tela | Caminho no servidor local |
+| Tela | Caminho |
 | --- | --- |
 | Login | `/` |
 | Cadastro | `/cadastro.html` |
 | Questionário e revisão | `/questionario.html` |
 | Meu treino demonstrativo | `/treino.html` |
 
-**Não abra os HTMLs com duplo clique ou pelo endereço `file://`.** Os módulos e recursos precisam do servidor Vite. `127.0.0.1` aponta para a própria máquina: quem for testar deve iniciar seu próprio servidor.
+Use dados fictícios ao testar. Após cadastrar, a sessão abre o questionário. Preencha as etapas e salve na revisão; saia e entre novamente para conferir o perfil salvo. Para ver `/treino.html`, abra o caminho diretamente. Ele não exige conta, usa somente exemplos e permite restaurá-los em **Dados desta demonstração**.
 
-Encerre com `Ctrl+C`. Nas próximas execuções, basta `npm run dev`; execute novamente `npm ci` se receber uma atualização das dependências.
+## API
 
-### 4. Conferir o funcionamento
-
-1. No login, clique em **Criar conta** e confira a mudança para cadastro.
-2. Envie o formulário vazio: os campos devem mostrar os erros e o primeiro campo inválido deve receber foco.
-3. Preencha com dados fictícios, por exemplo: nome `Pessoa Teste`, e-mail `teste@example.com` e senha `treino-ficticio-2026`.
-4. Confira o botão de mostrar/ocultar senha e envie o cadastro. O resultado esperado é a mensagem de que **nenhuma conta foi criada e nenhum dado foi enviado**.
-5. Volte ao login, preencha e envie. O aviso de que o acesso ainda não está disponível é esperado. Não existe uma conta de demonstração para entrar em um painel.
-
-A ausência de autenticação é uma limitação desta entrega, não um problema de instalação. As animações são reduzidas no celular e desativadas quando a preferência de movimento reduzido está ativa no sistema/navegador.
-
-Para conferir o questionário, abra `/questionario.html` diretamente e preencha com dados fictícios. Acrescente uma observação, selecione máquinas ou outros equipamentos e descreva os itens. Na etapa de restrições, “Sim” exige a orientação recebida; “Tenho dúvidas” permite detalhar a dúvida sem inventar uma orientação. Na revisão, confira os textos e use “Editar” para voltar. A ausência de salvamento e o botão de geração desabilitado são esperados nesta prévia.
-
-Para conferir Meu treino, abra `/treino.html` diretamente. Selecione a segunda-feira e clique em **Começar treino**: o primeiro exercício será aberto logo abaixo de seu cartão. Registre repetições no aquecimento A1 e conclua a série para observar o descanso. Clique em outro cartão para abrir seus detalhes sem fechar o primeiro; clicar novamente no mesmo cartão recolhe apenas seu painel com animação. A lista acompanha a largura do calendário mesmo com a sidebar recolhida. Recarregue a página para conferir a retomada. Os registros são locais e fictícios; use **Dados desta demonstração → Restaurar demonstração** para voltar ao exemplo inicial. Não há conta de demonstração nem comunicação com a futura API.
-
-### Testes e versão compilada
-
-Na raiz do projeto, use outro terminal ou interrompa o servidor antes de executar:
-
-```bash
-npm test
-npm run build
-npm run preview
-```
-
-`npm test` verifica validação das telas de acesso, respostas condicionais e detalhes do questionário, renderização textual da revisão, movimento e regras demonstrativas de calendário, aquecimento, execução, descanso e armazenamento. `npm run build` gera os arquivos estáticos em `dist/`; `npm run preview` serve esse resultado localmente, no endereço exibido no terminal. Execute o build novamente depois de alterar o código se quiser conferir essas alterações no preview. O preview não publica o projeto na internet.
-
-`node_modules/` e `dist/` são gerados localmente e ignorados pelo Git. A validação no navegador não substitui a validação da futura API.
-
-### Problemas comuns
-
-| Problema | Como resolver |
+| Método e rota | Função |
 | --- | --- |
-| `node` ou `npm` não reconhecido | Instale o Node.js com npm, reabra o terminal e confira as versões. |
-| Erro de versão do Node (`EBADENGINE`) | Use Node.js 22.12 ou superior, conforme `package.json`. |
-| PowerShell bloqueia `npm.ps1` | Execute os comandos no Prompt de Comando, ou use `npm.cmd` no lugar de `npm` no PowerShell. |
-| `package.json` não encontrado (`ENOENT`) | Abra o terminal na raiz do projeto. Se o arquivo não existir na cópia, confira se recebeu a versão com as telas. |
-| Falha de conexão durante `npm ci` | Confira o acesso ao registro npm na rede e tente novamente. Preserve `package-lock.json`. |
-| Página não abre | Mantenha `npm run dev` em execução e confira o endereço/porta que o terminal mostrou. |
-| Formulário desabilitado ou recursos ausentes | Acesse pelo servidor Vite, habilite JavaScript e confira erros no terminal e no console do navegador. |
-| Preview ausente ou desatualizado | Execute `npm run build` antes de `npm run preview`. |
-| Não consigo entrar após preencher os campos | A autenticação ainda não está implementada; o comportamento esperado é o aviso de prévia. |
+| `GET /api/health` | Confere a conexão com o MySQL. |
+| `POST /api/auth/register` | Cria conta comum e inicia sessão. |
+| `POST /api/auth/login` | Inicia sessão. |
+| `POST /api/auth/logout` | Encerra sessão. |
+| `GET /api/auth/me` | Retorna a conta autenticada. |
+| `GET /api/profile` | Retorna as respostas salvas da própria conta, ou `null`. |
+| `PUT /api/profile` | Valida e salva as respostas completas da própria conta. |
 
-## Organização atual
+Todas as rotas de perfil exigem autenticação. A API usa consultas parametrizadas e associa os dados ao usuário da sessão.
 
-```text
-TrainForge/
-├── frontend/
-│   ├── index.html       # Login
-│   ├── cadastro.html    # Cadastro
-│   ├── questionario.html # Questionário e revisão das respostas
-│   ├── treino.html      # Meu treino demonstrativo
-│   ├── src/
-│   │   ├── js/          # JavaScript organizado por páginas ou fluxo
-│   │   │   ├── auth/    # Interações, navegação e validação de login/cadastro
-│   │   │   ├── questionario/ # Estado, validação, apresentação e movimento do questionário
-│   │   │   └── treino/  # Dados, calendário, execução, descanso e apresentação
-│   │   └── styles/      # CSS global e específico das telas
-│   ├── public/assets/   # Logos, fotografias e ilustrações do treino
-│   └── tests/           # Testes de acesso, questionário e treino
-├── design/              # Conceitos, guia visual e licença da fonte da marca
-├── package.json
-├── package-lock.json
-├── vite.config.js
-└── README.md
-```
+## Verificar
 
-Os estilos são divididos por responsabilidade: `frontend/src/styles/global.css` reúne fontes, cores, regras básicas e acessibilidade; `auth.css` contém layout, componentes e animações das telas de acesso. Novas páginas devem importar o global e seu CSS específico. Componentes compartilhados podem ganhar um arquivo próprio quando houver reutilização real. O Vite pode reunir esses arquivos no build; a separação permanece no código-fonte.
+- `npm test`: validação da interface e da API, sessões, isolamento de contas e regras da demonstração com banco simulado.
+- `npm run test:db`: teste das rotas contra o MySQL real configurado no `.env`; cria contas fictícias e as remove ao final. Execute depois de `npm run db:setup`.
+- `npm run build`: gera os arquivos estáticos em `dist/`.
 
-Os JavaScripts ficam em `frontend/src/js/`, agrupados pelas páginas que atendem. A pasta `auth/` reúne os módulos de login e cadastro, com `auth.js` como ponto de entrada. A pasta `questionario/` separa estado e validação (`model.js`), apresentação (`render.js`), atualização dos elementos (`dom.js`), movimento (`motion.js`) e coordenação (`questionario.js`). `treino/` contém os módulos da demonstração de execução. Cada fluxo usa seu CSS específico em `styles/`; módulos compartilhados serão separados quando houver reutilização entre fluxos.
+## Estrutura
 
-Login e cadastro mantêm seus HTMLs e endereços próprios. `auth-navigation.js` carrega o próximo formulário e atualiza o histórico sem recriar a marca ou sortear outra foto. Se esse carregamento falhar, segue o link normalmente. `auth-motion.js` coordena a entrada e o reposicionamento dos campos com a API nativa de animações do navegador, sem novas dependências. As animações do formulário são encerradas quando a pessoa interage, a aba é ocultada ou a preferência de movimento muda. `photo-motion.js` move foto e linhas em camadas, somente com mouse no desktop. CSS e JavaScript respeitam movimento reduzido; no celular, os deslocamentos e tempos são menores.
+- `frontend/`: HTML, estilos em `src/styles/`, JavaScript por fluxo em `src/js/`, testes e imagens.
+- `backend/`: rotas, autenticação, validação, acesso a dados e testes.
+- `database/schema.sql` e `database/migrations/`: estrutura inicial e evolução revisável do banco.
+- `design/`: direção visual e regras da tela demonstrativa.
 
-`backend/` e `database/` serão introduzidas nas próximas entregas. A direção visual está em [design/GUIA_VISUAL.md](design/GUIA_VISUAL.md).
+Arquivos `.env`, dados locais do MySQL, `node_modules/` e `dist/` não são versionados.
