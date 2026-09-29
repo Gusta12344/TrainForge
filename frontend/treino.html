@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111315" />
+  <meta name="robots" content="noindex" />
+  <meta name="description" content="Acompanhe uma sessão fictícia de treino e registre séries neste navegador." />
+  <title>Meu treino · TrainForge</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/simbolo.svg" />
+  <link rel="stylesheet" href="/src/styles/global.css" />
+  <link rel="stylesheet" href="/src/styles/treino.css" />
+</head>
+<body class="workout-page">
+  <a class="skip-link" href="#workout-main">Pular para Meu treino</a>
+  <header class="mobile-header"><img src="/assets/logo-trainforge.svg" width="168" height="37" alt="TrainForge" /><button class="icon-button mobile-menu" type="button" data-menu aria-controls="workout-sidebar" aria-expanded="false" aria-label="Abrir menu" title="Abrir menu"><i data-lucide="menu" aria-hidden="true"></i></button></header>
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="workout-sidebar" id="workout-sidebar" aria-label="Navegação principal">
+    <div class="sidebar-top"><a class="sidebar-brand" href="/treino.html" aria-label="TrainForge, Meu treino"><img class="brand-full" src="/assets/logo-trainforge.svg" width="178" height="39" alt="" /><img class="brand-symbol" src="/assets/simbolo.svg" width="35" height="35" alt="" /></a><button class="icon-button desktop-menu" type="button" data-menu aria-controls="workout-sidebar" aria-expanded="true" aria-label="Recolher menu" title="Recolher menu"><i data-lucide="menu" aria-hidden="true"></i></button><button class="icon-button drawer-close" type="button" data-close-drawer aria-label="Fechar menu"><i data-lucide="x" aria-hidden="true"></i></button></div>
+    <nav class="sidebar-nav" aria-label="Seu espaço"><p class="nav-caption">SEU ESPAÇO</p><a href="/treino.html" class="nav-item current" aria-current="page" title="Meu treino"><i data-lucide="dumbbell" aria-hidden="true"></i><span class="nav-label">Meu treino</span></a><button type="button" class="nav-item" id="profile-open" title="Meu perfil"><i data-lucide="user-round" aria-hidden="true"></i><span class="nav-label">Meu perfil</span></button></nav>
+    <div class="sidebar-bottom"><button type="button" class="profile-chip" id="profile-chip" title="Perfil demonstrativo"><span class="avatar">TF</span><span class="nav-label">Demonstração</span></button><a class="exit-link" href="/" title="Sair da demonstração" aria-label="Sair da demonstração"><i data-lucide="log-out" aria-hidden="true"></i><span class="nav-label">Sair</span></a></div>
+  </aside>
+  <main class="workout-main" id="workout-main">
+    <div class="main-inner" id="app-shell" hidden>
+      <header class="hero"><div><p class="eyebrow">SEU PROGRAMA</p><h1><span class="title-mask"><span>BORA <em>TREINAR.</em></span></span></h1><p class="hero-description">Seu treino do dia, uma série de cada vez.</p></div><div class="hero-badges"><span class="demo-badge">Treino de demonstração</span><span class="storage-caption">Dados salvos neste navegador</span></div></header>
+      <section class="week-section" aria-labelledby="week-title"><div class="section-top"><div><p class="eyebrow accent">SUA SEMANA</p><h2 id="week-title">Semana</h2></div><div class="week-controls"><button type="button" class="small-button" id="previous-week" aria-label="Semana anterior"><i data-lucide="chevron-left" aria-hidden="true"></i></button><button type="button" class="small-button today-button" id="today-button">Hoje</button><button type="button" class="small-button" id="next-week" aria-label="Próxima semana"><i data-lucide="chevron-right" aria-hidden="true"></i></button></div></div><div class="week-grid" id="week-grid"></div></section>
+      <div id="active-banner" class="active-banner" hidden></div>
+      <div id="session-view"></div>
+      <div class="save-line"><span id="save-status" role="status" aria-live="polite">Salvo neste navegador</span><button id="retry-save" type="button" class="text-action" hidden>Tentar novamente</button></div>
+      <details class="demo-options"><summary>Dados desta demonstração</summary><p>Programa e histórico de exemplo. As execuções feitas aqui ficam somente neste navegador.</p><button id="reset-demo" type="button" class="text-action">Restaurar demonstração</button></details>
+    </div>
+    <div id="load-error" class="load-error" hidden><h1>Não foi possível abrir a demonstração</h1><p id="load-error-text"></p><button id="reset-error" type="button" class="primary-action">Reiniciar somente os dados da demonstração</button></div>
+    <noscript><p class="load-error">Ative o JavaScript para usar Meu treino.</p></noscript>
+  </main>
+  <div id="rest-panel" class="rest-panel" hidden></div>
+  <div class="sr-only" id="announcement" role="status" aria-live="polite" aria-atomic="true"></div>
+  <dialog id="profile-dialog" class="workout-dialog"><div class="dialog-head"><h2>Perfil de demonstração</h2><button type="button" class="icon-button" data-close-dialog aria-label="Fechar perfil"><i data-lucide="x" aria-hidden="true"></i></button></div><p>Este perfil é fictício e não está ligado ao cadastro.</p><dl><div><dt>Nome</dt><dd>Pessoa de demonstração</dd></div><div><dt>Objetivo</dt><dd>Visualizar a experiência de treino</dd></div><div><dt>Agenda</dt><dd>Segunda, quarta e sexta</dd></div></dl></dialog>
+  <dialog id="confirm-dialog" class="workout-dialog"><h2 id="confirm-title">Confirmar ação</h2><p id="confirm-text"></p><div class="dialog-actions"><button type="button" class="secondary-action" id="confirm-cancel">Cancelar</button><button type="button" class="primary-action" id="confirm-accept">Confirmar</button></div></dialog>
+  <script type="module" src="/src/js/treino/treino.js"></script>
+</body>
+</html>

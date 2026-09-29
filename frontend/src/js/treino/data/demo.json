@@ -1,0 +1,1174 @@
+{
+  "schemaVersion": 1,
+  "seedVersion": 1,
+  "profile": {
+    "id": "demo-profile",
+    "name": "Pessoa de demonstração",
+    "initials": "TF",
+    "goal": "Treino de demonstração",
+    "schedule": "Segunda, quarta e sexta"
+  },
+  "program": {
+    "id": "demo-abc",
+    "version": 1,
+    "source": "demo",
+    "weeklySchedule": {
+      "1": "A",
+      "3": "B",
+      "5": "C"
+    },
+    "sessions": [
+      {
+        "id": "A",
+        "title": "PEITO, OMBROS E TRÍCEPS",
+        "subtitle": "Empurrar e acessórios",
+        "availableMinutes": 50,
+        "estimatedMinutes": 39,
+        "exercises": [
+          {
+            "id": "supino-reto",
+            "name": "Supino reto com barra",
+            "primaryMuscles": "Peito, tríceps e ombros",
+            "movementPattern": "empurrar horizontal",
+            "equipmentId": "barra-olimpica",
+            "loadConvention": "total",
+            "availableLoadsKg": [
+              20.0,
+              22.5,
+              25.0,
+              27.5,
+              30.0,
+              32.5,
+              35.0,
+              37.5,
+              40.0,
+              42.5,
+              45.0,
+              47.5,
+              50.0,
+              52.5,
+              55.0,
+              57.5,
+              60.0,
+              62.5,
+              65.0,
+              67.5,
+              70.0,
+              72.5,
+              75.0,
+              77.5,
+              80.0,
+              82.5,
+              85.0,
+              87.5,
+              90.0,
+              92.5,
+              95.0,
+              97.5,
+              100.0,
+              102.5,
+              105.0,
+              107.5,
+              110.0,
+              112.5,
+              115.0,
+              117.5,
+              120.0
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 90,
+            "warmupPlan": {
+              "count": 2,
+              "policyVersion": "demo-1",
+              "reason": "Primeiro movimento deste padrão na sessão",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/barbell-bench-press.html",
+              "embedUrl": "https://www.youtube.com/embed/tuwHzzPdaGc?rel=0"
+            },
+            "poster": "/assets/treino/supino-reto.webp",
+            "instructions": [
+              "Deitado no banco, empurre a barra acima do peito e retorne de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 40,
+              "reps": [
+                10,
+                10,
+                9
+              ]
+            }
+          },
+          {
+            "id": "supino-inclinado",
+            "name": "Supino inclinado com halteres",
+            "primaryMuscles": "Peito superior e tríceps",
+            "movementPattern": "empurrar horizontal",
+            "equipmentId": "halteres",
+            "loadConvention": "por-halter",
+            "availableLoadsKg": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 90,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/incline-dumbbell-bench-press.html",
+              "embedUrl": "https://www.youtube.com/embed/8nNi8jbbUPE?rel=0"
+            },
+            "poster": "/assets/treino/supino-inclinado.webp",
+            "instructions": [
+              "No banco inclinado, eleve os halteres acima do peito e retorne de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 16,
+              "reps": [
+                11,
+                10,
+                9
+              ]
+            }
+          },
+          {
+            "id": "desenvolvimento",
+            "name": "Desenvolvimento com halteres",
+            "primaryMuscles": "Ombros e tríceps",
+            "movementPattern": "empurrar vertical",
+            "equipmentId": "halteres",
+            "loadConvention": "por-halter",
+            "availableLoadsKg": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 90,
+            "warmupPlan": {
+              "count": 2,
+              "policyVersion": "demo-1",
+              "reason": "Primeiro movimento deste padrão na sessão",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/seated-dumbbell-press.html",
+              "embedUrl": "https://www.youtube.com/embed/FRxZ6wr5bpA?rel=0"
+            },
+            "poster": "/assets/treino/desenvolvimento.webp",
+            "instructions": [
+              "Sentado, eleve os halteres acima dos ombros e retorne de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 12,
+              "reps": [
+                10,
+                10,
+                8
+              ]
+            }
+          },
+          {
+            "id": "elevacao-lateral",
+            "name": "Elevação lateral",
+            "primaryMuscles": "Ombros",
+            "movementPattern": "abdução de ombro",
+            "equipmentId": "halteres",
+            "loadConvention": "por-halter",
+            "availableLoadsKg": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "workingSets": 3,
+            "repRange": [
+              10,
+              12
+            ],
+            "restSeconds": 60,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Bodybuilding.com",
+              "sourceUrl": "https://www.youtube.com/watch?v=E3abEP8SIh0",
+              "embedUrl": "https://www.youtube.com/embed/E3abEP8SIh0?rel=0"
+            },
+            "poster": "/assets/treino/elevacao-lateral.webp",
+            "instructions": [
+              "Em pé, eleve os halteres lateralmente até a altura dos ombros e abaixe sob controle.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 6,
+              "reps": [
+                12,
+                12,
+                11
+              ]
+            }
+          },
+          {
+            "id": "triceps-polia",
+            "name": "Tríceps na polia",
+            "primaryMuscles": "Tríceps",
+            "movementPattern": "extensão de cotovelo",
+            "equipmentId": "polia-triceps",
+            "loadConvention": "maquina",
+            "availableLoadsKg": [
+              5,
+              10,
+              15,
+              20,
+              25,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              100,
+              105,
+              110,
+              115,
+              120,
+              125,
+              130,
+              135,
+              140,
+              145,
+              150,
+              155,
+              160,
+              165,
+              170,
+              175,
+              180,
+              185,
+              190,
+              195,
+              200
+            ],
+            "workingSets": 3,
+            "repRange": [
+              10,
+              12
+            ],
+            "restSeconds": 60,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/videos/how-to-perfect-your-tricep-pushdown",
+              "embedUrl": "https://www.youtube.com/embed/GCa8Q4e7laU?rel=0"
+            },
+            "poster": "/assets/treino/triceps-polia.webp",
+            "instructions": [
+              "Com os cotovelos próximos ao tronco, estenda os braços na polia e retorne sob controle.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 20,
+              "reps": [
+                12,
+                11,
+                10
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "COSTAS E BÍCEPS",
+        "subtitle": "Puxar e acessórios",
+        "availableMinutes": 50,
+        "estimatedMinutes": 39,
+        "exercises": [
+          {
+            "id": "puxada-frontal",
+            "name": "Puxada frontal",
+            "primaryMuscles": "Costas e bíceps",
+            "movementPattern": "puxar vertical",
+            "equipmentId": "polia-puxada",
+            "loadConvention": "maquina",
+            "availableLoadsKg": [
+              5,
+              10,
+              15,
+              20,
+              25,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              100,
+              105,
+              110,
+              115,
+              120,
+              125,
+              130,
+              135,
+              140,
+              145,
+              150,
+              155,
+              160,
+              165,
+              170,
+              175,
+              180,
+              185,
+              190,
+              195,
+              200
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 90,
+            "warmupPlan": {
+              "count": 2,
+              "policyVersion": "demo-1",
+              "reason": "Primeiro movimento deste padrão na sessão",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/lat-pull-down.html",
+              "embedUrl": "https://www.youtube.com/embed/iKrKgWR9wbY?rel=0"
+            },
+            "poster": "/assets/treino/puxada-frontal.webp",
+            "instructions": [
+              "Sentado, puxe a barra em direção à parte superior do peito e retorne sob controle.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 40,
+              "reps": [
+                10,
+                10,
+                9
+              ]
+            }
+          },
+          {
+            "id": "remada-baixa",
+            "name": "Remada baixa",
+            "primaryMuscles": "Costas e bíceps",
+            "movementPattern": "puxar horizontal",
+            "equipmentId": "polia-remada",
+            "loadConvention": "maquina",
+            "availableLoadsKg": [
+              5,
+              10,
+              15,
+              20,
+              25,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              100,
+              105,
+              110,
+              115,
+              120,
+              125,
+              130,
+              135,
+              140,
+              145,
+              150,
+              155,
+              160,
+              165,
+              170,
+              175,
+              180,
+              185,
+              190,
+              195,
+              200
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 90,
+            "warmupPlan": {
+              "count": 2,
+              "policyVersion": "demo-1",
+              "reason": "Primeiro movimento deste padrão na sessão",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Bodybuilding.com",
+              "sourceUrl": "https://www.youtube.com/watch?v=IzoCF_b3cIY",
+              "embedUrl": "https://www.youtube.com/embed/IzoCF_b3cIY?rel=0"
+            },
+            "poster": "/assets/treino/remada-baixa.webp",
+            "instructions": [
+              "Sentado, puxe o pegador em direção ao tronco e retorne sem soltar o peso bruscamente.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 35,
+              "reps": [
+                11,
+                10,
+                10
+              ]
+            }
+          },
+          {
+            "id": "remada-unilateral",
+            "name": "Remada unilateral com halter",
+            "primaryMuscles": "Costas e bíceps",
+            "movementPattern": "puxar horizontal",
+            "equipmentId": "halteres",
+            "loadConvention": "por-halter",
+            "availableLoadsKg": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 90,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/one-arm-dumbbell-row.html",
+              "embedUrl": "https://www.youtube.com/embed/YZgVEy6cmaY?rel=0"
+            },
+            "poster": "/assets/treino/remada-unilateral.webp",
+            "instructions": [
+              "Apoie uma mão e um joelho no banco, puxe o halter ao lado do tronco e abaixe controladamente.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 18,
+              "reps": [
+                10,
+                10,
+                9
+              ]
+            }
+          },
+          {
+            "id": "rosca-direta",
+            "name": "Rosca direta",
+            "primaryMuscles": "Bíceps",
+            "movementPattern": "flexão de cotovelo",
+            "equipmentId": "barra-rosca",
+            "loadConvention": "total",
+            "availableLoadsKg": [
+              20.0,
+              22.5,
+              25.0,
+              27.5,
+              30.0,
+              32.5,
+              35.0,
+              37.5,
+              40.0,
+              42.5,
+              45.0,
+              47.5,
+              50.0,
+              52.5,
+              55.0,
+              57.5,
+              60.0,
+              62.5,
+              65.0,
+              67.5,
+              70.0,
+              72.5,
+              75.0,
+              77.5,
+              80.0,
+              82.5,
+              85.0,
+              87.5,
+              90.0,
+              92.5,
+              95.0,
+              97.5,
+              100.0,
+              102.5,
+              105.0,
+              107.5,
+              110.0,
+              112.5,
+              115.0,
+              117.5,
+              120.0
+            ],
+            "workingSets": 3,
+            "repRange": [
+              10,
+              12
+            ],
+            "restSeconds": 60,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Bodybuilding.com",
+              "sourceUrl": "https://www.youtube.com/watch?v=dDI8ClxRS04",
+              "embedUrl": "https://www.youtube.com/embed/dDI8ClxRS04?rel=0"
+            },
+            "poster": "/assets/treino/rosca-direta.webp",
+            "instructions": [
+              "Em pé, flexione os cotovelos para elevar a barra e retorne de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 25,
+              "reps": [
+                10,
+                10,
+                9
+              ]
+            }
+          },
+          {
+            "id": "rosca-martelo",
+            "name": "Rosca martelo",
+            "primaryMuscles": "Bíceps e braquial",
+            "movementPattern": "flexão de cotovelo",
+            "equipmentId": "halteres",
+            "loadConvention": "por-halter",
+            "availableLoadsKg": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              32,
+              34,
+              36,
+              38,
+              40
+            ],
+            "workingSets": 3,
+            "repRange": [
+              10,
+              12
+            ],
+            "restSeconds": 60,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Bodybuilding.com",
+              "sourceUrl": "https://www.youtube.com/watch?v=0IAM2YtviQY",
+              "embedUrl": "https://www.youtube.com/embed/0IAM2YtviQY?rel=0"
+            },
+            "poster": "/assets/treino/rosca-martelo.webp",
+            "instructions": [
+              "Com as palmas voltadas ao tronco, flexione os cotovelos e retorne de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 10,
+              "reps": [
+                12,
+                11,
+                10
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "PERNAS E PANTURRILHAS",
+        "subtitle": "Membros inferiores",
+        "availableMinutes": 50,
+        "estimatedMinutes": 37,
+        "exercises": [
+          {
+            "id": "agachamento-smith",
+            "name": "Agachamento no Smith",
+            "primaryMuscles": "Quadríceps e glúteos",
+            "movementPattern": "agachar",
+            "equipmentId": "smith",
+            "loadConvention": "total",
+            "availableLoadsKg": [
+              20.0,
+              22.5,
+              25.0,
+              27.5,
+              30.0,
+              32.5,
+              35.0,
+              37.5,
+              40.0,
+              42.5,
+              45.0,
+              47.5,
+              50.0,
+              52.5,
+              55.0,
+              57.5,
+              60.0,
+              62.5,
+              65.0,
+              67.5,
+              70.0,
+              72.5,
+              75.0,
+              77.5,
+              80.0,
+              82.5,
+              85.0,
+              87.5,
+              90.0,
+              92.5,
+              95.0,
+              97.5,
+              100.0,
+              102.5,
+              105.0,
+              107.5,
+              110.0,
+              112.5,
+              115.0,
+              117.5,
+              120.0
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 90,
+            "warmupPlan": {
+              "count": 2,
+              "policyVersion": "demo-1",
+              "reason": "Primeiro movimento deste padrão na sessão",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/smith-machine-squat.html",
+              "embedUrl": "https://www.youtube.com/embed/BtfMX4WqUBo?rel=0"
+            },
+            "poster": "/assets/treino/agachamento-smith.webp",
+            "instructions": [
+              "Com a barra apoiada no alto das costas, flexione quadril e joelhos e retorne de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 50,
+              "reps": [
+                10,
+                9,
+                8
+              ]
+            }
+          },
+          {
+            "id": "leg-press",
+            "name": "Leg press 45°",
+            "primaryMuscles": "Quadríceps e glúteos",
+            "movementPattern": "empurrar com pernas",
+            "equipmentId": "leg-press-45",
+            "loadConvention": "maquina",
+            "availableLoadsKg": [
+              20,
+              25,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              100,
+              105,
+              110,
+              115,
+              120,
+              125,
+              130,
+              135,
+              140,
+              145,
+              150,
+              155,
+              160,
+              165,
+              170,
+              175,
+              180,
+              185,
+              190,
+              195,
+              200,
+              205,
+              210,
+              215,
+              220
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 90,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/45-degree-leg-press.html",
+              "embedUrl": "https://www.youtube.com/embed/sEM_zo9w2ss?rel=0"
+            },
+            "poster": "/assets/treino/leg-press.webp",
+            "instructions": [
+              "Sentado na máquina, flexione os joelhos para aproximar a plataforma e empurre de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 100,
+              "reps": [
+                12,
+                11,
+                10
+              ]
+            }
+          },
+          {
+            "id": "cadeira-extensora",
+            "name": "Cadeira extensora",
+            "primaryMuscles": "Quadríceps",
+            "movementPattern": "extensão de joelho",
+            "equipmentId": "extensora",
+            "loadConvention": "maquina",
+            "availableLoadsKg": [
+              5,
+              10,
+              15,
+              20,
+              25,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              100,
+              105,
+              110,
+              115,
+              120,
+              125,
+              130,
+              135,
+              140,
+              145,
+              150,
+              155,
+              160,
+              165,
+              170,
+              175,
+              180,
+              185,
+              190,
+              195,
+              200
+            ],
+            "workingSets": 3,
+            "repRange": [
+              8,
+              12
+            ],
+            "restSeconds": 60,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/leg-extension.html",
+              "embedUrl": "https://www.youtube.com/embed/0fl1RRgJ83I?rel=0"
+            },
+            "poster": "/assets/treino/cadeira-extensora.webp",
+            "instructions": [
+              "Sentado, estenda os joelhos para elevar a almofada e retorne sob controle.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 30,
+              "reps": [
+                12,
+                12,
+                11
+              ]
+            }
+          },
+          {
+            "id": "mesa-flexora",
+            "name": "Mesa flexora",
+            "primaryMuscles": "Posterior da coxa",
+            "movementPattern": "flexão de joelho",
+            "equipmentId": "flexora",
+            "loadConvention": "maquina",
+            "availableLoadsKg": [
+              5,
+              10,
+              15,
+              20,
+              25,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              100,
+              105,
+              110,
+              115,
+              120,
+              125,
+              130,
+              135,
+              140,
+              145,
+              150,
+              155,
+              160,
+              165,
+              170,
+              175,
+              180,
+              185,
+              190,
+              195,
+              200
+            ],
+            "workingSets": 3,
+            "repRange": [
+              10,
+              12
+            ],
+            "restSeconds": 60,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Bodybuilding.com",
+              "sourceUrl": "https://www.youtube.com/watch?v=jxctD6fL_FQ",
+              "embedUrl": "https://www.youtube.com/embed/jxctD6fL_FQ?rel=0"
+            },
+            "poster": "/assets/treino/mesa-flexora.webp",
+            "instructions": [
+              "Deitado de bruços, flexione os joelhos contra o rolo e retorne de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 25,
+              "reps": [
+                12,
+                11,
+                10
+              ]
+            }
+          },
+          {
+            "id": "panturrilha",
+            "name": "Panturrilha na máquina",
+            "primaryMuscles": "Panturrilhas",
+            "movementPattern": "flexão plantar",
+            "equipmentId": "panturrilha-maquina",
+            "loadConvention": "maquina",
+            "availableLoadsKg": [
+              5,
+              10,
+              15,
+              20,
+              25,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              100,
+              105,
+              110,
+              115,
+              120,
+              125,
+              130,
+              135,
+              140,
+              145,
+              150,
+              155,
+              160,
+              165,
+              170,
+              175,
+              180,
+              185,
+              190,
+              195,
+              200
+            ],
+            "workingSets": 3,
+            "repRange": [
+              12,
+              15
+            ],
+            "restSeconds": 60,
+            "warmupPlan": {
+              "count": 1,
+              "policyVersion": "demo-1",
+              "reason": "Preparação adicional para este exercício",
+              "restSeconds": 60
+            },
+            "video": {
+              "author": "Muscle & Strength",
+              "sourceUrl": "https://www.muscleandstrength.com/exercises/standing-machine-calf-raise",
+              "embedUrl": "https://www.youtube.com/embed/RBslMmWqzzE?rel=0"
+            },
+            "poster": "/assets/treino/panturrilha.webp",
+            "instructions": [
+              "Na máquina, eleve os calcanhares e retorne de forma controlada.",
+              "Registre a carga e as repetições realmente realizadas."
+            ],
+            "historyExample": {
+              "loadKg": 40,
+              "reps": [
+                15,
+                14,
+                13
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -11,6 +11,7 @@ export default defineConfig({
         login: fileURLToPath(new URL('./frontend/index.html', import.meta.url)),
         cadastro: fileURLToPath(new URL('./frontend/cadastro.html', import.meta.url)),
         questionario: fileURLToPath(new URL('./frontend/questionario.html', import.meta.url)),
+        treino: fileURLToPath(new URL('./frontend/treino.html', import.meta.url)),
       },
     },
   },
