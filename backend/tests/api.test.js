@@ -63,7 +63,7 @@ function fakePool() {
 
 test('cadastro, sessão, isolamento do perfil, login e logout', async () => {
   const pool = fakePool();
-  const server = createApp(pool).listen(0, '127.0.0.1');
+  const server = createApp(pool, { frontendOrigin: 'http://127.0.0.1:5173' }).listen(0, '127.0.0.1');
   await new Promise(resolve => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
   const request = (path, options = {}, cookie) => fetch(base + path, {
@@ -90,7 +90,11 @@ test('cadastro, sessão, isolamento do perfil, login e logout', async () => {
       body: JSON.stringify(answers),
     });
     assert.equal(crossOrigin.status, 403);
-    const saved = await request('/api/profile', { method: 'PUT', body: JSON.stringify(answers) }, cookieA);
+    const saved = await fetch(base + '/api/profile', {
+      method: 'PUT',
+      headers: { Origin: 'http://127.0.0.1:5173', 'Content-Type': 'application/json', Cookie: cookieA },
+      body: JSON.stringify(answers),
+    });
     assert.equal(saved.status, 200, JSON.stringify(await saved.json()));
     const own = await request('/api/profile', {}, cookieA);
     assert.deepEqual((await own.json()).answers, answers);

@@ -25,8 +25,9 @@ async function createLoginSession(pool, user) {
   return session;
 }
 
-export function createApp(pool) {
+export function createApp(pool, { frontendOrigin = process.env.FRONTEND_ORIGIN } = {}) {
   const app = express();
+  const trustedFrontendOrigin = frontendOrigin ? new URL(frontendOrigin).origin : null;
   app.disable('x-powered-by');
   app.use('/api', (_request, response, next) => {
     response.setHeader('Cache-Control', 'no-store');
@@ -37,7 +38,9 @@ export function createApp(pool) {
     const origin = request.get('Origin');
     if (origin) {
       try {
-        if (new URL(origin).origin !== `${request.protocol}://${request.get('Host')}`) return response.status(403).json({ error: 'Origem da solicitação inválida.' });
+        const requestOrigin = new URL(origin).origin;
+        const apiOrigin = `${request.protocol}://${request.get('Host')}`;
+        if (requestOrigin !== apiOrigin && requestOrigin !== trustedFrontendOrigin) return response.status(403).json({ error: 'Origem da solicitação inválida.' });
       } catch {
         return response.status(403).json({ error: 'Origem da solicitação inválida.' });
       }

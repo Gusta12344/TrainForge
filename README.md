@@ -37,11 +37,11 @@ HTML, CSS e JavaScript sem framework no navegador; Vite para desenvolvimento e b
 É necessário Node.js 22.12 ou superior, npm e MySQL 8. O projeto pode usar um MySQL já instalado. O script `npm run db:local` é específico para uma instância isolada configurada previamente no Windows; não cria um banco novo automaticamente.
 
 1. Execute `npm ci` na raiz do repositório.
-2. Copie `.env.example` para `.env` e preencha `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` para seu MySQL. `.env` é local e ignorado pelo Git.
+2. Copie `.env.example` para `.env` e preencha `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` e `DB_NAME` para seu MySQL. Mantenha `FRONTEND_ORIGIN` igual ao endereço mostrado pelo Vite. `.env` é local e ignorado pelo Git.
 3. Execute `npm run db:setup` para criar o banco e as tabelas ausentes. A conta MySQL usada aqui precisa poder criar o banco informado. Se a tabela `programs` já existir sem `content_snapshot`, o script a atualiza apenas quando estiver vazia; havendo registros, interrompe a operação para revisão dos dados.
 4. Em um terminal, execute `npm run dev:api`. Em outro, execute `npm run dev` e abra o endereço exibido pelo Vite, normalmente [http://127.0.0.1:5173](http://127.0.0.1:5173).
 
-O Vite encaminha `/api` para `http://127.0.0.1:43117`. Se alterar `API_PORT` no `.env`, ajuste também o proxy em [vite.config.js](vite.config.js). Para servir o build pela API, execute `npm run build` e `npm start`, com o MySQL ligado, e acesse [http://127.0.0.1:43117](http://127.0.0.1:43117). `npm run preview` serve somente os arquivos estáticos e não substitui a API.
+O Vite encaminha `/api` para `http://127.0.0.1:43117`. Se alterar `API_PORT` no `.env`, ajuste também o proxy em [vite.config.js](vite.config.js). Se o Vite usar outra porta ou nome de host, atualize `FRONTEND_ORIGIN` e reinicie a API. Para servir o build pela API, execute `npm run build` e `npm start`, com o MySQL ligado, e acesse [http://127.0.0.1:43117](http://127.0.0.1:43117). `npm run preview` serve somente os arquivos estáticos e não substitui a API.
 
 | Tela | Caminho |
 | --- | --- |

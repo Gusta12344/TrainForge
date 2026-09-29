@@ -20,6 +20,7 @@ function showSavedStatus() {
  if(!notice) return;
  notice.querySelector('strong').textContent='Respostas salvas';
  notice.querySelector('p').textContent='Seu perfil está salvo na sua conta. A geração de treinos será conectada na próxima etapa.';
+ document.querySelector('#next-description').textContent='Você pode salvar novamente depois de editar.';
 }
 const focusId=id=>document.getElementById(id)?.focus({preventScroll:true});
 function focusVisible(el) {
