@@ -35,6 +35,15 @@ svg.lucide { flex-shrink: 0; width: 22px; height: 22px; }
 
 .skip-link { position: fixed; z-index: 10; left: 16px; top: 12px; transform: translateY(-160%); padding: 12px 20px; background: var(--text); color: var(--bg); }
 .skip-link:focus { transform: translateY(0); }
+.system-feedback { position:fixed; z-index:100; inset:20px 20px auto auto; display:flex; align-items:flex-start; gap:12px; width:min(420px,calc(100vw - 32px)); padding:15px 14px; border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; background:#25292d; color:var(--text); box-shadow:0 12px 36px #0009; }
+.system-feedback[data-tone="success"] { border-left-color:#7ed9a0; }
+.system-feedback[data-tone="error"] { border-left-color:var(--error); }
+.system-feedback p { flex:1; margin:0; line-height:1.45; }
+.feedback-mark { flex:none; width:9px; height:9px; margin-top:7px; border-radius:50%; background:var(--accent); }
+.system-feedback[data-tone="success"] .feedback-mark { background:#7ed9a0; }
+.system-feedback[data-tone="error"] .feedback-mark { background:var(--error); }
+.system-feedback button { flex:none; min-width:30px; min-height:30px; margin:-5px -5px 0 0; border:0; background:transparent; color:var(--text); font-size:25px; line-height:1; }
+@media (max-width:600px) { .system-feedback { inset:auto 16px calc(16px + env(safe-area-inset-bottom)) 16px; width:auto; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }

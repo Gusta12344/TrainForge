@@ -2,16 +2,16 @@
   "schemaVersion": 1,
   "seedVersion": 1,
   "profile": {
-    "id": "demo-profile",
-    "name": "Pessoa de demonstração",
+    "id": "initial-profile",
+    "name": "Perfil inicial",
     "initials": "TF",
-    "goal": "Treino de demonstração",
+    "goal": "Programa A/B/C",
     "schedule": "Segunda, quarta e sexta"
   },
   "program": {
-    "id": "demo-abc",
+    "id": "initial-abc",
     "version": 1,
-    "source": "demo",
+    "source": "initial",
     "weeklySchedule": {
       "1": "A",
       "3": "B",
@@ -83,7 +83,7 @@
             "restSeconds": 90,
             "warmupPlan": {
               "count": 2,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Primeiro movimento deste padrão na sessão",
               "restSeconds": 60
             },
@@ -147,7 +147,7 @@
             "restSeconds": 90,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -211,7 +211,7 @@
             "restSeconds": 90,
             "warmupPlan": {
               "count": 2,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Primeiro movimento deste padrão na sessão",
               "restSeconds": 60
             },
@@ -275,7 +275,7 @@
             "restSeconds": 60,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -355,7 +355,7 @@
             "restSeconds": 60,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -444,7 +444,7 @@
             "restSeconds": 90,
             "warmupPlan": {
               "count": 2,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Primeiro movimento deste padrão na sessão",
               "restSeconds": 60
             },
@@ -524,7 +524,7 @@
             "restSeconds": 90,
             "warmupPlan": {
               "count": 2,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Primeiro movimento deste padrão na sessão",
               "restSeconds": 60
             },
@@ -588,7 +588,7 @@
             "restSeconds": 90,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -669,7 +669,7 @@
             "restSeconds": 60,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -733,7 +733,7 @@
             "restSeconds": 60,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -823,7 +823,7 @@
             "restSeconds": 90,
             "warmupPlan": {
               "count": 2,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Primeiro movimento deste padrão na sessão",
               "restSeconds": 60
             },
@@ -904,7 +904,7 @@
             "restSeconds": 90,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -984,7 +984,7 @@
             "restSeconds": 60,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -1064,7 +1064,7 @@
             "restSeconds": 60,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },
@@ -1144,7 +1144,7 @@
             "restSeconds": 60,
             "warmupPlan": {
               "count": 1,
-              "policyVersion": "demo-1",
+              "policyVersion": "initial-1",
               "reason": "Preparação adicional para este exercício",
               "restSeconds": 60
             },

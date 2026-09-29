@@ -1,11 +1,11 @@
-import demo from './data/demo.json' with { type: 'json' };
+import initialProgram from './data/programa-inicial.json' with { type: 'json' };
 import { weekDates, shiftLocalDate, fromDateKey } from './calendar.js';
 import { createExecution } from './model.js';
 export const STORAGE_KEY='trainforge.workout-demo.v1';
 const clone=value=>structuredClone(value);
 function seed(now) {
  const monday=shiftLocalDate(weekDates(now)[0],-7);
- const data={schemaVersion:1,seedVersion:1,seedAnchorDate:monday,profile:clone(demo.profile),program:clone(demo.program),preferences:{sidebarCollapsed:false},executions:[]};
+ const data={schemaVersion:1,seedVersion:1,seedAnchorDate:monday,profile:clone(initialProgram.profile),program:clone(initialProgram.program),preferences:{sidebarCollapsed:false},executions:[]};
  for(const [offset,id] of [[0,'A'],[2,'B'],[4,'C']]) {
   const date=shiftLocalDate(monday,offset),started=fromDateKey(date);started.setHours(9,0,0,0);
   const run=createExecution(data.program,id,date,started,[],data.profile.id);
@@ -56,7 +56,7 @@ function validExecution(run) {
 }
 function validate(data) {
  return isRecord(data)&&data.schemaVersion===1&&data.seedVersion===1&&isDateKey(data.seedAnchorDate)&&isRecord(data.profile)&&typeof data.profile.name==='string'
-  &&isRecord(data.program)&&data.program.id==='demo-abc'&&isRecord(data.program.weeklySchedule)&&Array.isArray(data.program.sessions)&&data.program.sessions.length===3&&data.program.sessions.every(validSession)
+  &&isRecord(data.program)&&['demo-abc','initial-abc'].includes(data.program.id)&&isRecord(data.program.weeklySchedule)&&Array.isArray(data.program.sessions)&&data.program.sessions.length===3&&data.program.sessions.every(validSession)
   &&isRecord(data.preferences)&&typeof data.preferences.sidebarCollapsed==='boolean'&&Array.isArray(data.executions)&&data.executions.every(validExecution);
 }
 export class WorkoutRepository {
@@ -65,7 +65,7 @@ export class WorkoutRepository {
   if(this.memory)return {ok:true,data:clone(this.memory),persisted:this.persisted};
   let raw;
   try{raw=this.storage.getItem(STORAGE_KEY);}catch(error){raw=null;this.readError=error;}
-  if(raw!=null){try{const data=JSON.parse(raw);if(!validate(data))return {ok:false,error:'Versão desconhecida ou dados incompatíveis. Seus dados permanecem intactos.'};this.memory=data;this.persisted=true;return {ok:true,data:clone(data),persisted:true};}catch{return {ok:false,error:'Os dados desta demonstração estão corrompidos. Eles não foram apagados.'};}}
+  if(raw!=null){try{const data=JSON.parse(raw);if(!validate(data))return {ok:false,error:'Versão desconhecida ou dados incompatíveis. Seus dados permanecem intactos.'};this.memory=data;this.persisted=true;return {ok:true,data:clone(data),persisted:true};}catch{return {ok:false,error:'Os dados locais do treino estão corrompidos. Eles não foram apagados.'};}}
   const data=seed(this.clock());const saved=this.save(data);return {ok:true,data:clone(data),persisted:saved.ok,error:saved.error};
  }
  save(data) {
@@ -75,7 +75,7 @@ export class WorkoutRepository {
   catch{this.persisted=false;return {ok:false,error:'Não foi possível salvar neste navegador. O treino continua apenas nesta aba.'};}
  }
  resetDemo(now=this.clock()) {
-  try{this.storage.removeItem(STORAGE_KEY);}catch{return {ok:false,error:'Não foi possível remover os dados da demonstração.'};}
+  try{this.storage.removeItem(STORAGE_KEY);}catch{return {ok:false,error:'Não foi possível remover os dados locais do treino.'};}
   this.memory=null;return this.save(seed(now));
  }
 }

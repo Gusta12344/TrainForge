@@ -3,6 +3,7 @@ import { steps, questions, initialAnswers, stepQuestions, validateStep, toggleMu
 import { blocks, heading, renderReview, esc } from './render.js';
 import { reconcile } from './dom.js';
 import { initMotion, entrance, outgoing, enterStep, captureLayout, rearrange, animate, fadeOut, withMotionFocus } from './motion.js';
+import { showFeedback, queueFeedback, showQueuedFeedback } from '../shared/feedback.js';
 const icons={Activity,Dumbbell,Weight,Volleyball,Check,ArrowRight,ArrowLeft,ChevronDown,Pencil,Plus,Trash2,Info,CircleAlert};
 const refreshIcons=(root=document)=>createIcons({root,icons,attrs:{'stroke-width':1.7,'aria-hidden':'true'}});
 const answers=initialAnswers();
@@ -12,15 +13,16 @@ const content=document.querySelector('#step-content');
 const next=document.querySelector('#continue');
 const back=document.querySelector('#back');
 const status=document.querySelector('#questionnaire-status');
-let step=0, editing=null, errors={}, attempted=false, dirty=false, removed=null;
+let step=0, editing=null, errors={}, attempted=false, dirty=false, removed=null, profileSaved=false, saving=false;
 let blockCache=new Map();
-const announce=text=>{status.textContent=text;};
+const announce=(text,tone)=>{if(tone)showFeedback(text,tone);else status.textContent=text;};
 function showSavedStatus() {
  const notice=document.querySelector('.generation-notice');
  if(!notice) return;
  notice.querySelector('strong').textContent='Respostas salvas';
- notice.querySelector('p').textContent='Seu perfil está salvo na sua conta. A geração de treinos será conectada na próxima etapa.';
+ notice.querySelector('p').textContent='Seu perfil está salvo na sua conta. O programa disponível nesta versão ainda não usa essas respostas.';
  document.querySelector('#next-description').textContent='Você pode salvar novamente depois de editar.';
+ document.querySelector('#open-workout').hidden=false;
 }
 const focusId=id=>document.getElementById(id)?.focus({preventScroll:true});
 function focusVisible(el) {
@@ -39,9 +41,10 @@ function refreshNavigation() {
  document.querySelector('#step-position').textContent=`Etapa ${step+1} de 7${innerWidth<900?' · '+steps[step]:''}`;
  document.querySelector('.progress-track').innerHTML=steps.map((_,i)=>`<span class="progress-segment ${i===step?'is-current':completed.has(i)&&!Object.keys(validateStep(answers,i)).length?'is-done':''}"></span>`).join('');
  back.hidden=step===0;
- next.disabled=false;
- next.innerHTML=`${step===6?'Salvar respostas':editing!==null?'Voltar à revisão':'Continuar'} <i data-lucide="arrow-right" aria-hidden="true"></i>`;
+ next.disabled=saving;
+ next.innerHTML=saving?'Salvando…':`${step===6?'Salvar respostas':editing!==null?'Voltar à revisão':'Continuar'} <i data-lucide="arrow-right" aria-hidden="true"></i>`;
  document.querySelector('#next-description').textContent=step===6?'Seu perfil será salvo na sua conta.':editing!==null?'Confira suas alterações.':`Próxima etapa: ${steps[step+1]}`;
+ document.querySelector('#open-workout').hidden=step!==6||!profileSaved||dirty;
  refreshIcons();
 }
 function mount() {
@@ -50,6 +53,7 @@ function mount() {
  if(step===6) document.querySelector('#step-body').innerHTML=renderReview(answers);
  else patchBlocks();
  refreshNavigation();
+ if(step===6&&profileSaved&&!dirty)showSavedStatus();
 }
 function patchBlocks() {
  const body=document.querySelector('#step-body');
@@ -112,6 +116,7 @@ function remember() {
  positions.set(step,{scroll:scrollY,focus:document.activeElement?.id});
 }
 function go(destination,{edit=false,returnToReview=false,history=true}={}) {
+ if(saving)return;
  // A revisão exige dados coerentes também quando acessada pelo histórico do navegador.
  if(destination===6) {
   const incomplete=[0,1,2,3,4,5].find(i=>Object.keys(validateStep(answers,i)).length);
@@ -172,7 +177,7 @@ form.addEventListener('change',event=>{
     const message='Escolha até duas regiões. Desmarque uma antes de selecionar outra.';
     document.getElementById('error-Q04').textContent=message;
     document.getElementById('error-Q04').hidden=false;
-    announce(message);return;
+    announce(message,'error');return;
    }
    setAnswer(input.name,value);
   } else setAnswer(input.name,input.checked);
@@ -198,10 +203,15 @@ form.addEventListener('keydown',event=>{
 next.addEventListener('click',event=>{if(event.detail>1) event.preventDefault();});
 form.addEventListener('submit',async event=>{
  event.preventDefault();
+ if(saving)return;
  if(step===6) {
   const incomplete=[0,1,2,3,4,5].find(i=>Object.keys(validateStep(answers,i)).length);
   if(incomplete!==undefined) {go(incomplete);attempted=true;errors=validateStep(answers,step);paintErrors(true);return;}
+  saving=true;
   next.disabled=true;
+  next.setAttribute('aria-busy','true');
+  next.textContent='Salvando…';
+  form.setAttribute('aria-busy','true');
   announce('Salvando suas respostas…');
   try {
    const response=await fetch('/api/profile',{method:'PUT',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(projectAnswers(answers))});
@@ -209,10 +219,12 @@ form.addEventListener('submit',async event=>{
    const result=await response.json();
    if(!response.ok) throw new Error(result.error||'Não foi possível salvar as respostas.');
    dirty=false;
+   profileSaved=true;
    showSavedStatus();
-   announce('Respostas salvas na sua conta.');
-  } catch(error) {announce(error.message||'Falha de conexão. Tente salvar novamente.');}
-  finally {next.disabled=false;}
+   queueFeedback('Respostas salvas na sua conta. O programa atual usa o modelo disponível nesta versão.','success');
+   location.assign('/treino.html');
+  } catch(error) {announce(error.message||'Falha de conexão. Tente salvar novamente.','error');}
+  finally {saving=false;next.removeAttribute('aria-busy');form.removeAttribute('aria-busy');refreshNavigation();}
   return;
  }
  attempted=true; errors=validateStep(answers,step); paintErrors(true);
@@ -241,8 +253,8 @@ document.addEventListener('click',event=>{
  if(link.hasAttribute('data-edit')) {editing=Number(link.dataset.edit);go(editing,{edit:true});return;}
  if(link.hasAttribute('data-error-link')) {event.preventDefault();focusVisible(document.querySelector(`#group-${link.dataset.errorLink} input, #group-${link.dataset.errorLink} select, #group-${link.dataset.errorLink} textarea, #group-${link.dataset.errorLink} button`));return;}
  if(link.hasAttribute('data-apply-time')) {
-  if(!(parseNumber(answers.commonTime)>0)) {announce('Informe um tempo maior que zero antes de aplicar.');focusVisible(document.getElementById('commonTime'));return;}
-  selectedDays(answers).forEach(d=>{answers.times[d]=answers.commonTime;}); dirty=true;patchBlocks();announce('Tempo aplicado aos dias selecionados.');return;
+  if(!(parseNumber(answers.commonTime)>0)) {announce('Informe um tempo maior que zero antes de aplicar.','error');focusVisible(document.getElementById('commonTime'));return;}
+  selectedDays(answers).forEach(d=>{answers.times[d]=answers.commonTime;}); dirty=true;patchBlocks();announce('Tempo aplicado aos dias selecionados.','success');return;
  }
  if(link.dataset.add) {
   const kind=link.dataset.add;
@@ -257,11 +269,11 @@ document.addEventListener('click',event=>{
   const add=document.querySelector(`[data-add="${kind}"]`);
   document.querySelector('[data-undo]')?.remove();
   add.insertAdjacentHTML('afterend','<button class="text-button undo-button" type="button" data-undo>Desfazer remoção</button>');
-  focusVisible(add);announce('Atividade removida. Você pode desfazer.');return;
+  focusVisible(add);announce('Atividade removida. Você pode desfazer.','info');return;
  }
  if(link.hasAttribute('data-undo')&&removed) {
   const {kind,index,event:removedEvent}=removed;answers[kind].splice(index,0,removedEvent);removed=null;patchBlocks();
-  focusVisible(document.querySelector(`[data-event="${removedEvent.id}"] input, [data-event="${removedEvent.id}"] select`));announce('Atividade restaurada.');
+  focusVisible(document.querySelector(`[data-event="${removedEvent.id}"] input, [data-event="${removedEvent.id}"] select`));announce('Atividade restaurada.','success');
  }
 });
 const showSteps=document.querySelector('#show-steps');
@@ -275,9 +287,25 @@ window.addEventListener('popstate',event=>{
  if(event.state?.questionnaire && visited.has(event.state.step)) go(event.state.step,{history:false});
 });
 window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
-document.querySelector('#logout').addEventListener('click',async()=>{
- try { await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'}); } finally { dirty=false; location.assign('/'); }
+const discardDialog=document.querySelector('#discard-dialog');
+document.querySelector('#discard-cancel').addEventListener('click',()=>discardDialog.close());
+document.querySelector('#discard-confirm').addEventListener('click',()=>{discardDialog.close();void logout();});
+document.querySelector('#logout').addEventListener('click',()=>{
+ if(saving)return;
+ if(dirty){discardDialog.showModal();document.querySelector('#discard-cancel').focus();return;}
+ void logout();
 });
+async function logout(){
+ const button=document.querySelector('#logout');
+ button.disabled=true;
+ button.textContent='Saindo…';
+ try {
+  const response=await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});
+  if(!response.ok&&response.status!==401)throw new Error();
+  queueFeedback('Você saiu da conta.','success');
+  dirty=false;location.assign('/');
+ } catch {button.disabled=false;button.textContent='Sair da conta';announce('Não foi possível sair da conta. Tente novamente.','error');}
+}
 initMotion();
 async function bootstrap() {
  try {
@@ -290,15 +318,16 @@ async function bootstrap() {
   const saved=await profile.json();
   if(saved.answers) {
    Object.assign(answers,saved.answers);
+   profileSaved=true;
    for(let i=0;i<7;i++) visited.add(i);
    for(let i=0;i<6;i++) completed.add(i);
    step=6;
    window.history.replaceState({questionnaire:true,step:6},'',location.pathname);
   }
   mount();
-  if(saved.answers) showSavedStatus();
   document.querySelector('#questionnaire-actions').hidden=false;
   entrance();
+  showQueuedFeedback();
  } catch(error) {
   content.innerHTML='<h1>Não foi possível abrir o questionário.</h1><p>Confira a conexão com o servidor e recarregue a página.</p>';
   announce(error.message);

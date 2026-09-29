@@ -15,14 +15,14 @@ export function parseReps(value) {
  return Number(raw);
 }
 /** A snapshot freezes this program's prescription for an execution. */
-export function createExecution(program,sessionId,plannedDate,now,history=[],profileId='demo-profile') {
+export function createExecution(program,sessionId,plannedDate,now,history=[],profileId='initial-profile') {
  const session=program.sessions.find(s=>s.id===sessionId); if(!session) throw new Error('Sessão inválida');
  const startedAt=now.toISOString();
  return {id:`${profileId}-${sessionId}-${localDateKey(now)}`,profileId,programId:program.id,programVersion:program.version,sessionTemplateId:sessionId,
   plannedDate,performedDate:localDateKey(now),startedAt,finishedAt:null,status:'active',source:'local',prescriptionSnapshot:copy(session),rest:null,
   exercises:session.exercises.map(exercise=>{
    const ref=findReference(history,exercise,startedAt); const suggested=ref?suggestWarmup(exercise,ref.loadKg):[];
-   return {id:exercise.id,equipmentId:exercise.equipmentId,loadConvention:exercise.loadConvention,referenceLoadKg:ref?.loadKg??null,referenceSource:ref?.executionId??null,referenceRuleVersion:'demo-1',suggestedWarmup:suggested,completed:false,
+   return {id:exercise.id,equipmentId:exercise.equipmentId,loadConvention:exercise.loadConvention,referenceLoadKg:ref?.loadKg??null,referenceSource:ref?.executionId??null,referenceRuleVersion:'initial-1',suggestedWarmup:suggested,completed:false,
     sets:[...Array.from({length:exercise.warmupPlan.count},(_,i)=>({id:`warmup-${i+1}`,type:'warmup',targetReps:i===0?8:5,suggestedLoadKg:suggested[i]?.loadKg??null,actualLoadKg:null,actualReps:null,status:'pending',completedAt:null})),
       ...Array.from({length:exercise.workingSets},(_,i)=>({id:`working-${i+1}`,type:'working',targetReps:exercise.repRange, suggestedLoadKg:ref?.loadKg??null,actualLoadKg:null,actualReps:null,status:'pending',completedAt:null}))]};
   })};

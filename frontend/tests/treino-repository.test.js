@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { WorkoutRepository } from '../src/js/treino/repository.js';
-import demo from '../src/js/treino/data/demo.json' with { type:'json' };
+import demo from '../src/js/treino/data/programa-inicial.json' with { type:'json' };
 function storage(){const map=new Map();return {map,getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v),removeItem:k=>map.delete(k)};}
 test('primeiro acesso cria semana anterior completa e mantém âncora na recarga',()=>{
  const store=storage(),repo=new WorkoutRepository({storage:store,clock:()=>new Date(2026,8,27,12)});

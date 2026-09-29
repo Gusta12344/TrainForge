@@ -214,6 +214,12 @@ button.step-link { color:var(--text); }
 .session-help { color:var(--muted); font-size:16px; margin-top:8px; max-width:760px; }
 .session-help summary { min-height:44px; padding:12px 0; cursor:pointer; }
 .session-help p { margin:0 0 12px; }
+.questionnaire-dialog { width:min(440px,calc(100vw - 32px)); padding:28px; border:1px solid var(--border); border-radius:10px; background:#25292d; color:var(--text); box-shadow:0 24px 72px #000b; }
+.questionnaire-dialog::backdrop { background:#000b; }
+.questionnaire-dialog h2 { margin:0 0 10px; font:800 32px/1 var(--display); }
+.questionnaire-dialog p { margin:0 0 24px; color:var(--muted); line-height:1.5; }
+.questionnaire-dialog>div { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; }
+.questionnaire-dialog .primary-button { min-width:0; font-size:20px!important; }
 .review-section { grid-column:1/-1; padding:0 0 24px; border-bottom:1px solid var(--divider); }
 .review-heading h2 { font:700 28px/1.2 var(--display); margin:0; }
 .review-heading h2 span { color:var(--accent); margin-right:12px; font-size:20px; }

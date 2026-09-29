@@ -4,6 +4,8 @@ import { setRandomBackground } from './background.js';
 import '../../styles/global.css';
 import '../../styles/auth.css';
 import { setupAuthNavigation } from './auth-navigation.js';
+import { destinationAfterAuth } from './flow.js';
+import { queueFeedback, showQueuedFeedback } from '../shared/feedback.js';
 import { setupPhotoMotion } from './photo-motion.js';
 import { animateAuthEntrance, prepareAuthMotion } from './auth-motion.js';
 
@@ -29,6 +31,7 @@ document.querySelector('[data-brand]').innerHTML = `
 const icons = { Mail, LockKeyhole, Eye, EyeOff, ArrowRight, ArrowUpRight, UserRound };
 const refreshIcons = () => createIcons({ icons, attrs: { 'stroke-width': 1.7, 'aria-hidden': 'true' } });
 let resetForm = initializeAuth();
+showQueuedFeedback();
 animateAuthEntrance(document.querySelector('.auth-panel'));
 window.addEventListener('pageshow', () => resetForm());
 setupAuthNavigation(() => { resetForm = initializeAuth(); });
@@ -97,6 +100,8 @@ function initializeAuth() {
 
     const submit = form.querySelector('[type="submit"]');
     submit.disabled = true;
+    form.setAttribute('aria-busy', 'true');
+    feedback.dataset.state = 'pending';
     feedback.textContent = mode === 'register' ? 'Criando sua conta…' : 'Entrando…';
     feedback.hidden = false;
     try {
@@ -109,17 +114,30 @@ function initializeAuth() {
       const result = await response.json();
       if (!response.ok) {
         if (result.field) showFieldError(form.elements[result.field], result.error);
+        feedback.dataset.state = 'error';
         feedback.textContent = result.error || 'Não foi possível concluir. Tente novamente.';
         feedback.focus();
         return;
       }
       password.value = '';
-      location.assign('/questionario.html');
-    } catch {
-      feedback.textContent = 'Não foi possível conectar ao servidor. Confira se ele está ligado.';
+      if (mode === 'register') {
+        queueFeedback('Conta criada. Complete o questionário para salvar seu perfil.','success');
+        location.assign(destinationAfterAuth(mode));
+        return;
+      }
+      feedback.textContent = 'Acesso confirmado. Carregando seu espaço…';
+      const profileResponse = await fetch('/api/profile', { credentials: 'same-origin' });
+      if (!profileResponse.ok) throw new Error('Não foi possível carregar seu perfil. Tente novamente.');
+      const destination = destinationAfterAuth(mode, await profileResponse.json());
+      queueFeedback(destination === '/treino.html' ? 'Login realizado. Bem-vindo ao seu espaço.' : 'Login realizado. Complete seu questionário.','success');
+      location.assign(destination);
+    } catch (error) {
+      feedback.dataset.state = 'error';
+      feedback.textContent = error.message?.startsWith('Não foi possível carregar seu perfil') ? error.message : 'Não foi possível conectar ao servidor. Confira se ele está ligado.';
       feedback.focus();
     } finally {
       submit.disabled = false;
+      form.removeAttribute('aria-busy');
     }
   });
 
@@ -132,6 +150,7 @@ function initializeAuth() {
     toggle.innerHTML = '<i data-lucide="eye" aria-hidden="true"></i>';
     refreshIcons();
     feedback.hidden = true;
+    delete feedback.dataset.state;
     fields.forEach((field) => showFieldError(field, ''));
   };
 

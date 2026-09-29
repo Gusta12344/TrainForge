@@ -43,7 +43,7 @@
             <noscript><p>Ative o JavaScript para preencher o questionário.</p></noscript>
             <footer class="questionnaire-actions" id="questionnaire-actions" hidden>
               <p id="next-description"></p>
-              <div class="action-buttons"><button type="button" class="back-button" id="back" hidden><i data-lucide="arrow-left" aria-hidden="true"></i> Voltar</button><button type="submit" class="primary-button" id="continue">Continuar <i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
+              <div class="action-buttons"><a href="/treino.html" class="back-button" id="open-workout" hidden>Meu treino</a><button type="button" class="back-button" id="back" hidden><i data-lucide="arrow-left" aria-hidden="true"></i> Voltar</button><button type="submit" class="primary-button" id="continue">Continuar <i data-lucide="arrow-right" aria-hidden="true"></i></button></div>
             </footer>
           </form>
           <details class="session-help"><summary>Sobre suas respostas</summary><p>Você pode voltar entre etapas sem perder respostas. Na revisão, clique em “Salvar respostas” para guardá-las na sua conta.</p></details>
@@ -52,6 +52,7 @@
       </main>
     </div>
     <div id="questionnaire-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+    <dialog id="discard-dialog" class="questionnaire-dialog" aria-labelledby="discard-title"><h2 id="discard-title">Sair sem salvar?</h2><p>As alterações feitas desde o último salvamento serão perdidas.</p><div><button type="button" class="back-button" id="discard-cancel">Continuar editando</button><button type="button" class="primary-button" id="discard-confirm">Sair e descartar</button></div></dialog>
     <script type="module" src="/src/js/questionario/questionario.js"></script>
   </body>
 </html>
